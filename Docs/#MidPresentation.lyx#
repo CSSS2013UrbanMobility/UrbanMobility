@@ -1,0 +1,428 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass beamer
+\begin_preamble
+\usetheme{Warsaw}
+%\usetheme{Boadilla}
+% or ...
+
+\usecolortheme{orchid}
+\setbeamertemplate{footline}[text line]{} % makes the footer EMPTY
+
+\setbeamercovered{transparent}
+% or whatever (possibly just delete it)
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 2
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Daily urban mobility using agent-based modeling
+\end_layout
+
+\begin_layout Author
+N.
+\begin_inset space ~
+\end_inset
+
+Dugué, C.
+\begin_inset space ~
+\end_inset
+
+Fink, C.
+\begin_inset space ~
+\end_inset
+
+Lagesse, F.
+\begin_inset space ~
+\end_inset
+
+Querini, B.
+\begin_inset space ~
+\end_inset
+
+Quinn, J.
+\begin_inset space ~
+\end_inset
+
+Raimbault
+\end_layout
+
+\begin_layout Date
+CSSS2013 Group Project
+\end_layout
+
+\begin_layout Section
+Framework
+\end_layout
+
+\begin_layout Subsection
+Context and problem
+\end_layout
+
+\begin_layout BeginFrame
+Context and problem
+\end_layout
+
+\begin_layout Itemize
+General framework : problem of daily travels of individuals inside a city.
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Already a lot of literature (MIRO 2012, Mobisim 2013 , ...), complicated models
+ in huge projects.
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Problematic : to obtain a simple model [F(S,S,C)] to express multimodal
+ transport shares and local flows functions over a standard day.
+\end_layout
+
+\begin_layout Subsection
+Objectives and Methodology
+\end_layout
+
+\begin_layout BeginFrame
+Objectives
+\end_layout
+
+\begin_layout Itemize
+Simple but rigourous model.
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Integration of real data (GIS work) 
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Apply the model on a test case (e.
+ g.
+ optimal implantation of a new transportation infrastructure)
+\end_layout
+
+\begin_layout BeginFrame
+Methodology
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename methodoProject.png
+	scale 60
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Model conception methodology
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Main identified issues
+\end_layout
+
+\begin_layout Subsection
+Theoretical issues
+\end_layout
+
+\begin_layout BeginFrame
+Theoretical issues
+\end_layout
+
+\begin_layout Itemize
+Urban social systems are highly heterogeneous.
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Human decisions modeling.
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Scaling.
+\end_layout
+
+\begin_layout Subsection
+Practical issues
+\end_layout
+
+\begin_layout BeginFrame
+Practical issues
+\end_layout
+
+\begin_layout Itemize
+Group organisation: multi-disciplinary work
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Time
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Data collection and treatment
+\end_layout
+
+\begin_layout Section
+Achieved work and perspectives
+\end_layout
+
+\begin_layout Subsection
+Achieved work
+\end_layout
+
+\begin_layout BeginFrame
+Achieved work
+\end_layout
+
+\begin_layout Itemize
+Reframed the problem.
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Collected the data.
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Drafted a workplan
+\end_layout
+
+\begin_layout Subsection
+Perspectives
+\end_layout
+
+\begin_layout BeginFrame
+Perspectives
+\end_layout
+
+\begin_layout Itemize
+Import data in NetLogo
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Create agents
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Make them interact between each other and with networks
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Explore and apply 
+\end_layout
+
+\begin_layout BeginFrame
+Conclusion
+\end_layout
+
+\begin_layout Itemize
+Reframed the problem.
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Collected the data.
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Drafted a workplan
+\end_layout
+
+\begin_layout BeginFrame
+Questions
+\end_layout
+
+\begin_layout Standard
+
+\size largest
+\begin_inset space \hfill{}
+\end_inset
+
+?
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout EndFrame
+
+\end_layout
+
+\end_body
+\end_document
