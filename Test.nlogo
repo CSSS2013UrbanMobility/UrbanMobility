@@ -35,9 +35,7 @@ to setup
     
     gis:draw paths-layer-data 1
 end
-
-
-;;do import from shp through graphstream?
+;;
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
