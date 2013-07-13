@@ -32,9 +32,12 @@ breed [abstract-gis-paths abstract-gis-path]
 
 to setup
     set paths-layer-data gis:load-dataset "/Users/Juste/Documents/Complex Systems/CSSS2013/UrbanMobility/transport-network-toulouse/buses_.shp"  
-    gis:set-drawing-color red
+    
     gis:draw paths-layer-data 1
 end
+
+
+;;graphstream for import?
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
