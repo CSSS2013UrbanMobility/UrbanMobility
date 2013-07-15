@@ -1,0 +1,61 @@
+;;source file for routing procedures
+
+;individuals-own[
+; prefered-paths
+
+; next-travel-start
+; next-travel-type
+
+; is-travelling?
+
+; current-edge
+; remaining-distance-in-edge
+
+; current-position ;couple of coordinates
+;]
+
+
+
+
+to setup-prefered-paths
+  ;;each agent has like for example three prefered paths from housing to work
+  
+  
+end
+
+
+
+to move-agent
+  ifelse is-travelling?[
+    ;;first make a step in the current edge
+    move-in-current-edge
+    
+    ;;then check if end of edge has been reached 
+    ;if yes
+    ; first test if destination has been reached
+    ; if needed (case of car, launch re-route procedure). Anyway change of edge
+    test-end-edge
+  ][
+    if ticks = next-travel-start [
+      ;;begin a journey
+      ;;check the type of travel, if sub or foot, shortest path routing
+      ;;if car, first prefered path routing
+      ;;launch the agent in the first edge of its adventure by setting current-edge first one of travel and setting position in edge 0.
+     
+     
+      set is-travelling? true
+    ]
+  ]
+  
+  
+end
+
+;;make agent advance in current edge
+to move-in-current-edge
+  
+end
+
+;;test if ended edge (see up comments)
+to test-edge-end
+  
+end
