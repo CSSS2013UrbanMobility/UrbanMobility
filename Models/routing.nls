@@ -68,6 +68,7 @@ to move-in-current-edge
       
       set remaining-time-in-tick 0
       set remaining-distance-in-edge remaining-distance-in-edge - possible-distance-in-edge
+      fd possible-distance-in-edge
     ][
       ;; the other case go to end of edge
       ;; decrease remaining time by time to reach it
@@ -75,16 +76,34 @@ to move-in-current-edge
       ;; check reroute conditions : do the rerouting if needed
       ;; update current-edge
       
-    
+      fd remaining-distance-in-edge
+      ;maybe at this point need some position correction? by :
+      ;move-to one-of vertices with-min [distance myself]
+      set remaining-time-in-tick remaining-time-in-tick - (remaining-distance-in-edge / ([possible-speed] of current-edge))
+           
+      ;;reroute procedure.
+      reroute
+      
+      
     ]
     
 end
 
 
+to reroute
+  ;;first of all check condition
+  let hypothetical-next-edge first current-path
+  ;if ;congestion-on-edge > individual
+
+
+end
+
+
+
 ;;road procedure to get current possible speed
 ;;implements an affine by parts law
 to-report possible-speed
-  let c 0.5;congestion-in-edge
+  let c 0.5;congestion-on-edge
   if c < begin-congestion-treshold [report max-speed]
   ifelse c < max-congestion-treshold [report (max-speed - min-congestion-speed) * (max-congestion-treshold - c) + max-speed]
   [report min-congestion-speed]

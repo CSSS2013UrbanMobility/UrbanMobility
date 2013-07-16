@@ -15,6 +15,7 @@ to setup-routing
   ;;ask individuals here to set their own routing variables, better for code separation
   ask individuals [
     setup-prefered-paths
+    set times-rerouted 0
   ]
   
 

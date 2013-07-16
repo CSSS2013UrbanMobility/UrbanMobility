@@ -2,7 +2,7 @@ to test-three-best-paths
   
   ask individuals [die]
   ask roads [set max-speed 1]
-  create-individuals 1 [setxy random-xcor random-ycor set travel-destinations (list (list random-xcor random-ycor))
+  create-individuals 1 [setxy 20 12 set travel-destinations (list (list -24 -13))
     
     setup-prefered-paths
     show prefered-paths
