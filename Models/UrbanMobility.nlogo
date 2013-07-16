@@ -14,10 +14,19 @@ __includes[
   
   ;;utilities
   "utils/NetworkUtilities.nls"
+  "utils/ListUtilities.nls"
 ]
 
 globals[
-   tick-time-interval 
+  ;;real time interval for a tick
+  tick-time-interval
+  
+  
+  
+  ;;utility variables
+  remaining-vertices
+  cluster-treshold
+  remaining-links
 ]
 
 
@@ -55,7 +64,10 @@ individuals-own[
 ]
 
 roads-own[
- ;;capacity of road
+ ;;real length of road
+ road-length
+  
+ ;;capacity of road : unit : Number of cars
  capacity
  
  ;;authorized speed in edge

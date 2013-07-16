@@ -1,6 +1,6 @@
-to setup
+to setup-for-test
   ca
-  let paths-layer-data gis:load-dataset "/Users/Juste/Documents/ComplexSystems/CSSS2013/UrbanMobility/Data/testproj.shp"
+  let paths-layer-data gis:load-dataset "../Data/testproj.shp"
   gis:set-world-envelope gis:envelope-of paths-layer-data
   gis:set-drawing-color blue
   gis:draw paths-layer-data 1
@@ -16,7 +16,7 @@ to setup
          setxy min list first loc max-pxcor min list first but-first loc max-pycor
          new-vertex 
          ask abstract [set vertices-list lput myself vertices-list]
-         ifelse current-vertex = nobody [set current-vertex self][ask current-vertex [create-path-with myself [new-path]] set current-vertex self]
+         ifelse current-vertex = nobody [set current-vertex self][ask current-vertex [create-road-with myself [new-path]] set current-vertex self]
          ]
          
        ]
@@ -40,6 +40,7 @@ end
 
 
 to fusion-neighbors
+  set cluster-treshold 0.4
    let neigh other vertices in-radius cluster-treshold
    if count neigh > 0 [
     let n nobody
@@ -50,11 +51,11 @@ to fusion-neighbors
       setxy x y
       ask neigh [
          set remaining-vertices remove self remaining-vertices
-         ask my-paths [if not member? other-end neigh and other-end != n [ask other-end [create-path-with n]] die]
+         ask my-roads [if not member? other-end neigh and other-end != n [ask other-end [create-road-with n]] die]
          die
       ]
     ]
-    ask my-paths [if not member? other-end neigh and other-end != n [ask other-end [create-path-with n]] die]
+    ask my-roads [if not member? other-end neigh and other-end != n [ask other-end [create-road-with n]] die]
     die
    ]
 end

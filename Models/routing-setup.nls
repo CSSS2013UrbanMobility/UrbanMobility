@@ -14,7 +14,7 @@ end
 
 to-report three-best-paths [origin destination]
   ;;get shortest path
-  let first-path []
+  let first-path [] let second-path [] let third-path []
   nw:set-snapshot vertices roads
   ask roads [set weight link-length / max-speed]
   ask origin [set first-path nw:weighted-path-to destination "weight"]
@@ -22,5 +22,12 @@ to-report three-best-paths [origin destination]
   ;;perturbate the path length (increasing weight variable)
   let epsilon mean [link-length] of links / 5 ;;put it as a global param? -> make test on the euclidian "continuity"
   foreach first-path [ask ? [set weight weight + epsilon]]
+  ask origin [set second-path nw:weighted-path-to destination "weight"]
+  
+  ;;finish by the third
+  foreach first-path [ask ? [set weight weight + epsilon]]
+  ask origin [set third-path nw:weighted-path-to destination "weight"]
+  
+  report (list first-path second-path third-path)
   
 end
