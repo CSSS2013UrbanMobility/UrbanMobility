@@ -5,7 +5,8 @@ undirected-link-breed [roads road] ;; edges between nodes
 undirected-link-breed [transits transit]
 breed [vertices vertex] ;; vertices
 vertices-own [is-station?]
-roads-own [max-speed capacity]
+roads-own [max-speed capacity length-of-edge]
+transits-own [ligne length-of-edge]
 
 
 
@@ -382,7 +383,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.4
+NetLogo 5.0.2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
