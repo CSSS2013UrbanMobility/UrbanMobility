@@ -158,6 +158,7 @@ We work either on imaginary city or with projected geographic description
 \end_inset
 
 .
+<<<<<<< HEAD
  Furthermore, we assume the existence of an resistance function on the edges
  of the road network, which will be anisotropic in order to simplify the
  implementation, and that will depend on the current charge of the edge.
@@ -165,6 +166,11 @@ We work either on imaginary city or with projected geographic description
  be determined by real frequencies.
  For use of street network by foot, we assume that no congestion is possible
  so resistance is constant regarding time and charge.
+=======
+ Furthermore, we assume the existence of an impedance function on the edges
+ of the road network, which will be anisotropic in order to simplify the
+ implementation
+>>>>>>> master
 \end_layout
 
 \begin_layout Standard
@@ -172,15 +178,21 @@ Time is discretised given a variable step
 \begin_inset Formula $\tau$
 \end_inset
 
+<<<<<<< HEAD
 , for which the value is not supposed to influence the results under a certain
  precision treshold, which determination will be one of the first aims of
  the experiments.
+=======
+, for which the value is not supposed the results under a certain precision
+ treshold, which determination will be one of the first aims of the experiments.
+>>>>>>> master
 \end_layout
 
 \begin_layout Section
 Agents description
 \end_layout
 
+<<<<<<< HEAD
 \begin_layout Standard
 Agents can be of three different types, what has a direct consequence in
  their time-table and decision-making.
@@ -219,5 +231,7 @@ Given the time-table of an agent
 
 \end_layout
 
+=======
+>>>>>>> master
 \end_body
 \end_document
