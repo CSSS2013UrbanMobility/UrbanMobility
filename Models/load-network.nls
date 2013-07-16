@@ -24,9 +24,7 @@ end
 to zoom-to-dataset [vectordataset]
   let margin 0.01   ;; in degrees
   let envelope gis:envelope-of vectordataset
-  show envelope
   set envelope (list (item 0 envelope - margin)  (item 1 envelope + margin) (item 2 envelope - margin) (item 3 envelope + margin))
-  show envelope
   gis:set-world-envelope-ds envelope ;gis:envelope-of vectordataset
 end
 
