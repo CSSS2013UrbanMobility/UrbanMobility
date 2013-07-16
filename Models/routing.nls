@@ -72,7 +72,7 @@ to make-a-step
   ;;seems current if time step is around 5 minutes.
   
   ;;first make a step in the current edge
-  while [remaining-time-in-tick > 0] [
+  while [remaining-time-in-tick > 0 and is-travelling?] [
     move-in-current-edge
   ]
   
@@ -107,6 +107,7 @@ to move-in-current-edge
       ;maybe at this point need some position correction? by :
       ;move-to one-of vertices with-min [distance myself]
       set remaining-time-in-tick remaining-time-in-tick - (remaining-distance-in-edge / ([possible-speed] of current-edge))
+            
            
       ;;reroute procedure.
       reroute

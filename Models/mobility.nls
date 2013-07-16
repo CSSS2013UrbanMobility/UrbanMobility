@@ -126,7 +126,11 @@ to setup-agents
  ] ; end ask patches
   
   ;reinitialisation of car-taken
-  ask individuals [set car-taken? false set hidden? true]
+  ask individuals [
+    set car-taken? false
+    set hidden? true
+    
+  ]
     
 end
 

@@ -8,6 +8,7 @@ extensions[nw gis array]
 
 __includes[
   ;;source files
+  "main.nls"
   "routing.nls" 
   "routing-setup.nls"
   "routing-tests.nls"
@@ -16,7 +17,7 @@ __includes[
   "load-network.nls"
   "output.nls"
   "codePatches.nls"
-  "main.nls"
+  "tests.nls"
   
   ;;utilities
   "utils/NetworkUtilities.nls"

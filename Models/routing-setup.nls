@@ -22,6 +22,7 @@ to setup-routing
     
     set times-rerouted 0
     set individual-tolerance-for-congestion 1
+    set is-travelling? false
     set paths-setup paths-setup - 1
     
     ;;next travel time
@@ -59,7 +60,7 @@ to setup-prefered-paths
   foreach space-schedule [
     let shortest []
     set destination one-of vertices with [is-station?] with-min [distance patch first ? first but-first ?]
-    ask origin [set shortest nw:weighted-distance-to destination "weight"]
+    ask origin [set shortest nw:weighted-path-to destination "weight"]
     set paths-transportation lput shortest paths-transportation
     set origin destination
   ]

@@ -1,6 +1,6 @@
 
 to test-go-for-one-day
-  let cobaye one-of individuals
+  let cobaye individual 7460;one-of individuals
   ask cobaye [set hidden? false]
   
   repeat round (24 / tick-time-interval)[
