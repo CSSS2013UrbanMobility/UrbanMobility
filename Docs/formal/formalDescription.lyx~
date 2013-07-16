@@ -158,9 +158,19 @@ We work either on imaginary city or with projected geographic description
 \end_inset
 
 .
+<<<<<<< HEAD
+ Furthermore, we assume the existence of an resistance function on the edges
+ of the road network, which will be anisotropic in order to simplify the
+ implementation, and that will depend on the current charge of the edge.
+ For the public transport, speeds in edges only depend of time, and will
+ be determined by real frequencies.
+ For use of street network by foot, we assume that no congestion is possible
+ so resistance is constant regarding time and charge.
+=======
  Furthermore, we assume the existence of an impedance function on the edges
  of the road network, which will be anisotropic in order to simplify the
  implementation
+>>>>>>> master
 \end_layout
 
 \begin_layout Standard
@@ -168,13 +178,60 @@ Time is discretised given a variable step
 \begin_inset Formula $\tau$
 \end_inset
 
+<<<<<<< HEAD
+, for which the value is not supposed to influence the results under a certain
+ precision treshold, which determination will be one of the first aims of
+ the experiments.
+=======
 , for which the value is not supposed the results under a certain precision
  treshold, which determination will be one of the first aims of the experiments.
+>>>>>>> master
 \end_layout
 
 \begin_layout Section
 Agents description
 \end_layout
 
+<<<<<<< HEAD
+\begin_layout Standard
+Agents can be of three different types, what has a direct consequence in
+ their time-table and decision-making.
+\end_layout
+
+\begin_layout Standard
+The set of agents is described as 
+\begin_inset Formula $\mathcal{A}\simeq$
+\end_inset
+
+ //ADD Formal agent Description
+\end_layout
+
+\begin_layout Section
+Movements in the city
+\end_layout
+
+\begin_layout Standard
+Given the time-table of an agent 
+\begin_inset Formula $a\in\mathcal{A}$
+\end_inset
+
+, represented as a function 
+\begin_inset Formula $T_{a}:D_{a}\rightarrow C$
+\end_inset
+
+ with 
+\begin_inset Formula $D_{a}\in\mathcal{P}([0;24])$
+\end_inset
+
+ (most probably defined on finite subset), we propose the existence of a
+ stochastic process of decision 
+\begin_inset Formula $d_{a}$
+\end_inset
+
+
+\end_layout
+
+=======
+>>>>>>> master
 \end_body
 \end_document
