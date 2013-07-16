@@ -62,8 +62,10 @@ to create-edges-and-vertices [vectordataset l_color l_width v_color v_size v_sha
         ask firstpoint [
           if-else is-public-transport? [
              create-transit-with lastpoint [
-               set color l_color
+               set color gis:property-value feature "color_num"
                set thickness l_width
+               set length-of-edge gis:property-value feature "length"
+               set ligne gis:property-value feature "line"
                
              ]
           ] [
@@ -72,6 +74,7 @@ to create-edges-and-vertices [vectordataset l_color l_width v_color v_size v_sha
                set thickness l_width 
                set capacity gis:property-value feature "capacity"
                set max-speed gis:property-value feature "avgspeed"
+               set length-of-edge gis:property-value feature "length"
              ]
           ]
 ;          create-link-with lastpoint [
