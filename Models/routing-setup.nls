@@ -1,0 +1,26 @@
+;;;;;;;
+;;;setup functions for routines procedures
+;;;;;;
+
+
+
+to setup-prefered-paths
+  ;;each agent has like for example three prefered paths from housing to work, work to leisure, leisure to work
+  ;;paths are calculated at setup by particular heuristic, by small perturbation of the length of the shortest path and new shortest path calculation
+  
+  
+end
+
+
+to-report three-best-paths [origin destination]
+  ;;get shortest path
+  let first-path []
+  nw:set-snapshot vertices roads
+  ask roads [set weight link-length / max-speed]
+  ask origin [set first-path nw:weighted-path-to destination "weight"]
+  
+  ;;perturbate the path length (increasing weight variable)
+  let epsilon mean [link-length] of links / 5 ;;put it as a global param? -> make test on the euclidian "continuity"
+  foreach first-path [ask ? [set weight weight + epsilon]]
+  
+end

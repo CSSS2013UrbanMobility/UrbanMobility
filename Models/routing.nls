@@ -17,24 +17,11 @@
 
 
 
-to setup-prefered-paths
-  ;;each agent has like for example three prefered paths from housing to work
-  
-  
-end
-
 
 
 to move-agent
   ifelse is-travelling?[
-    ;;first make a step in the current edge
-    move-in-current-edge
-    
-    ;;then check if end of edge has been reached 
-    ;if yes
-    ; first test if destination has been reached
-    ; if needed (case of car, launch re-route procedure). Anyway change of edge
-    test-end-edge
+    make-a-step
   ][
     if ticks = next-travel-start [
       ;;begin a journey
@@ -50,12 +37,30 @@ to move-agent
   
 end
 
+to make-a-step
+  
+  let remaining-time tick-time-interval
+  ;;need to check if time of step allows to go to next edge.
+  ;;seems current if time step is around 5 minutes.
+  
+  ;;first make a step in the current edge
+  while [remaining-time > 0] [
+    move-in-current-edge
+    
+    ;;then check if end of edge has been reached 
+    ;if yes
+    ; first test if destination has been reached
+    ; if needed (case of car, launch re-route procedure). Anyway change of edge
+    test-end-edge
+  ]
+end
+
 ;;make agent advance in current edge
 to move-in-current-edge
   
 end
 
 ;;test if ended edge (see up comments)
-to test-edge-end
+to test-end-edge
   
 end

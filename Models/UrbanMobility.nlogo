@@ -4,26 +4,75 @@
 ;;;;;;;;;;;;;;;;;;;;;
 
 
-extensions[nw]
+extensions[nw gis]
 
 __includes[
+  ;;source files
   "routing.nls" 
+  "routing-setup.nls"
+  "routing-tests.nls"
+  
+  ;;utilities
+  "utils/NetworkUtilities.nls"
 ]
+
+globals[
+   tick-time-interval 
+]
+
+
 
 
 ;;vertices of both networks
 breed [vertices vertex]
 
-;;three different type of individuals
-breed [workers worker]
-breed [unemployeds unemployed]
-breed [students student]
+;;breed for individual agents. type of agent is a owned var
+breed [individuals individual]
+
+;;breed for utility purposes (testing functions for rerouting)
+breed [abstract-gis-paths abstract-gis-path]
 
 ;;links for road network
 undirected-link-breed [roads road]
 
 ;;links for public transportation network
 undirected-link-breed [transits transit]
+
+
+
+individuals-own[
+ prefered-paths
+
+ next-travel-start
+ next-travel-type
+
+ is-travelling?
+
+ current-edge
+ remaining-distance-in-edge
+
+ current-position ;couple of coordinates
+]
+
+roads-own[
+ ;;capacity of road
+ capacity
+ 
+ ;;authorized speed in edge
+ max-speed
+ 
+ ;;intermediary var for weighted paths
+ weight
+ 
+ ;;list of pointers to people currently travelling in edge
+ people-in-edge
+ 
+]
+
+abstract-gis-paths-own [
+   gis-feature
+   vertices-list
+]
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
