@@ -17,26 +17,14 @@
 
 
 
-to setup-prefered-paths
-  ;;each agent has like for example three prefered paths from housing to work
-  
-  
-end
-
-
-
 to move-agent
   ifelse is-travelling?[
-    ;;first make a step in the current edge
-    move-in-current-edge
-    
-    ;;then check if end of edge has been reached 
-    ;if yes
-    ; first test if destination has been reached
-    ; if needed (case of car, launch re-route procedure). Anyway change of edge
-    test-end-edge
+    make-a-step
   ][
     if ticks = next-travel-start [
+      ;set travel type and so one : decision tree
+      ;take-decision 
+      
       ;;begin a journey
       ;;check the type of travel, if sub or foot, shortest path routing
       ;;if car, first prefered path routing
@@ -44,18 +32,60 @@ to move-agent
      
      
       set is-travelling? true
+      set times-rerouted 0
     ]
   ]
   
   
 end
 
-;;make agent advance in current edge
-to move-in-current-edge
+to make-a-step
   
+  set remaining-time-in-tick tick-time-interval
+  ;;need to check if time of step allows to go to next edge.
+  ;;seems current if time step is around 5 minutes.
+  
+  ;;first make a step in the current edge
+  while [remaining-time-in-tick > 0] [
+    move-in-current-edge
+  ]
 end
 
-;;test if ended edge (see up comments)
-to test-edge-end
-  
+
+
+;;make agent advance in current edge
+;;check rerouting if needed.
+to move-in-current-edge
+    ;;then check if end of edge has been reached 
+    ;if yes
+    ; first test if destination has been reached
+    ; if needed (case of car, launch re-route procedure). Anyway change of edge
+    let possible-distance-in-edge ([possible-speed] of current-edge) * tick-time-interval
+    ifelse possible-distance-in-edge < remaining-distance-in-edge [
+      
+      ;;simple move : the agent don't finish the edge, advance just in one step without changing current edge
+      ;;don't forget update remaining distance
+      
+      set remaining-time-in-tick 0
+      set remaining-distance-in-edge remaining-distance-in-edge - possible-distance-in-edge
+    ][
+      ;; the other case go to end of edge
+      ;; decrease remaining time by time to reach it
+      ;; check is travel is finished
+      ;; check reroute conditions : do the rerouting if needed
+      ;; update current-edge
+      
+    
+    ]
+    
+end
+
+
+;;road procedure to get current possible speed
+;;implements an affine by parts law
+to-report possible-speed
+  let c 0.5;congestion-in-edge
+  if c < begin-congestion-treshold [report max-speed]
+  ifelse c < max-congestion-treshold [report (max-speed - min-congestion-speed) * (max-congestion-treshold - c) + max-speed]
+  [report min-congestion-speed]
 end

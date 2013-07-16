@@ -1,0 +1,58 @@
+;;;;;;;
+;;;setup functions for routines procedures
+;;;;;;
+
+
+
+to setup-routing
+  ;;here set specific variables, prefered paths etc
+  set begin-congestion-treshold 0.7
+  set max-congestion-treshold 1
+  set min-congestion-speed 5
+  
+  
+  
+  ;;ask individuals here to set their own routing variables, better for code separation
+  ask individuals [
+    setup-prefered-paths
+  ]
+  
+
+end
+
+
+to setup-prefered-paths
+  ;;each agent has like for example three prefered paths from housing to work, work to leisure, leisure to work
+  ;;paths are calculated at setup by particular heuristic, by small perturbation of the length of the shortest path and new shortest path calculation
+  set prefered-paths []
+  
+  let origin one-of vertices with-min [distance myself] let destination nobody
+  foreach travel-destinations [
+    set destination one-of vertices with-min [distance patch first ? first but-first ?]
+    set prefered-paths lput three-best-paths origin destination prefered-paths
+    set origin destination
+  ]
+end
+
+
+to-report three-best-paths [origin destination]
+  ;;get shortest path
+  let first-path [] let second-path [] let third-path []
+  nw:set-snapshot vertices roads
+  ask roads [set weight link-length / max-speed]
+  ask origin [set first-path nw:weighted-path-to destination "weight"]
+  
+   nw:set-snapshot vertices roads
+  ;;perturbate the path length (increasing weight variable)
+  set epsilon-prefered-paths 10 * mean [link-length] of links ;;put it as a global param? -> make test on the euclidian "continuity"
+  foreach first-path [ask ? [set weight weight + epsilon-prefered-paths]]
+  ask origin [set second-path nw:weighted-path-to destination "weight"]
+  
+   nw:set-snapshot vertices roads
+  ;;finish by the third
+  foreach second-path [ask ? [set weight weight + epsilon-prefered-paths]]
+  ask origin [set third-path nw:weighted-path-to destination "weight"]
+  
+  report (list first-path second-path third-path)
+  
+end
