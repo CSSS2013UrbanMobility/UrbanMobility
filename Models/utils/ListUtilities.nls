@@ -32,3 +32,8 @@ to-report concat [l1 l2]
   report l1
 end
 
+;;rotation
+to-report rotate [l]
+  report lput first l but-first l
+end
+

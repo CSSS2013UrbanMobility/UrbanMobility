@@ -1,0 +1,27 @@
+
+
+to setup-model
+  
+  __clear-all-and-reset-ticks
+  resize-world 0 50 0 50
+  set-patch-size 12
+  
+  set step tick-time-interval
+  
+  load-networks
+  
+  import-patches
+  setup-agents
+  ;setup-cars
+  
+  
+  correct-bugs
+  
+  setup-routing
+  
+end
+
+
+
+
+

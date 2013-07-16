@@ -3,6 +3,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 to correct-bugs
-  ask individuals with [time-schedule = 0 or space-schedule = 0][die]
+  ask individuals with [time-schedule = 0 or space-schedule = 0 or length time-schedule = 3][die]
   
 end

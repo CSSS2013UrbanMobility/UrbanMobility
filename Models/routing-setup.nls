@@ -6,6 +6,7 @@
 
 to setup-routing
   
+  
   ;;here set specific variables, prefered paths etc
   set begin-congestion-treshold 0.7
   set max-congestion-treshold 1
@@ -15,12 +16,17 @@ to setup-routing
   
   ;;ask individuals here to set their own routing variables, better for code separation
   set paths-setup count individuals
+  output-print "Caching all shortest and prefered routes..."
   ask individuals [
     setup-prefered-paths
     
     set times-rerouted 0
     set individual-tolerance-for-congestion 1
     set paths-setup paths-setup - 1
+    
+    ;;next travel time
+    set next-travel-start first time-schedule
+    set time-schedule lput first time-schedule but-first time-schedule
   ]
   
   ask roads [
@@ -34,7 +40,11 @@ end
 to setup-prefered-paths
   ;;each agent has like for example three prefered paths from housing to work, work to leisure, leisure to work
   ;;paths are calculated at setup by particular heuristic, by small perturbation of the length of the shortest path and new shortest path calculation
+  
+  ;;calculation of shortest paths in public transportation are also done here for a huge gain in time
+  
   set prefered-paths []
+  set paths-transportation []
   
   let origin one-of vertices with-min [distance myself] let destination nobody
   foreach space-schedule [
@@ -42,6 +52,18 @@ to setup-prefered-paths
     set prefered-paths lput three-best-paths origin destination prefered-paths
     set origin destination
   ]
+  
+  set origin one-of vertices with [is-station?] with-min [distance myself] set destination nobody
+  nw:set-snapshot vertices transits
+  ask transits [set weight link-length / avg-speed]
+  foreach space-schedule [
+    let shortest []
+    set destination one-of vertices with [is-station?] with-min [distance patch first ? first but-first ?]
+    ask origin [set shortest nw:weighted-distance-to destination "weight"]
+    set paths-transportation lput shortest paths-transportation
+    set origin destination
+  ]
+  
 end
 
 
@@ -52,7 +74,7 @@ to-report three-best-paths [origin destination]
   ask roads [set weight link-length / avg-speed]
   ask origin [set first-path nw:weighted-path-to destination "weight"]
   
-   nw:set-snapshot vertices roads
+  nw:set-snapshot vertices roads
   ;;perturbate the path length (increasing weight variable)
   set epsilon-prefered-paths 10 * mean [link-length] of links ;;put it as a global param? -> make test on the euclidian "continuity"
   foreach first-path [ask ? [set weight weight + epsilon-prefered-paths]]

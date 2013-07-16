@@ -1,0 +1,14 @@
+
+to test-go-for-one-day
+  let cobaye one-of individuals
+  ask cobaye [set hidden? false]
+  
+  repeat round (24 / tick-time-interval)[
+    ;;move
+    ask cobaye [move-agent]
+    ;;update reporters?
+    
+    tick
+  ]
+  
+end

@@ -16,6 +16,7 @@ __includes[
   "load-network.nls"
   "output.nls"
   "codePatches.nls"
+  "main.nls"
   
   ;;utilities
   "utils/NetworkUtilities.nls"
@@ -125,6 +126,7 @@ individuals-own[
  ;;variables for path calculation and traveling
  ;;;;;;;;;;;;;
  prefered-paths
+ paths-transportation
 
  next-travel-start
  next-travel-type
@@ -197,33 +199,6 @@ patches-own[
   offices?
   leisure?
 ]
-
-
-
-to setup-model
-  
-  __clear-all-and-reset-ticks
-  resize-world 0 50 0 50
-  set-patch-size 12
-  
-  set step tick-time-interval
-  
-  load-networks
-  
-  import-patches
-  setup-agents
-  ;setup-cars
-  
-  
-  correct-bugs
-  
-  setup-routing
-  
-end
-
-
-
-
 
 
 
