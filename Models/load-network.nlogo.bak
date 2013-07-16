@@ -8,9 +8,98 @@ vertices-own [is-station?]
 roads-own [max-speed capacity]
 
 
+to load-networks
+  clear-canvas white
+  load-public-transport-network
+  load-road-network
+end
+
+to load-public-transport-network
+  set pt-network load-from-shapefile "../Data/simple_network/pt.shp"
+  zoom-to-dataset pt-network
+  create-edges-and-vertices pt-network blue 3.0 black 5.0 "circle" true
+end
+
+to load-road-network
+  set road-network load-from-shapefile "../Data/simple_network/rd.shp"
+  ;zoom-to-dataset road-network
+  create-edges-and-vertices road-network black 0.75 black 0.75 "circle" false
+end
+
+to-report load-from-shapefile [filename]
+  report gis:load-dataset filename
+end
+
+to zoom-to-dataset [vectordataset]
+  let margin 0.01   ;; in degrees
+  let envelope gis:envelope-of vectordataset
+  show envelope
+  set envelope (list (item 0 envelope - margin)  (item 1 envelope + margin) (item 2 envelope - margin) (item 3 envelope + margin))
+  show envelope
+  gis:set-world-envelope-ds envelope ;gis:envelope-of vectordataset
+end
 
 
-__includes [ "load-network.nls" ]
+to-report create-vertex-at [coords v_color v_size v_shape is-public-transport?]
+  if empty? coords [
+    report nobody
+  ]
+
+  let x first coords
+  let y last coords
+  
+  if not any? vertices-on patch x y [
+    create-vertices 1 [ 
+      set xcor x
+      set ycor y
+      set shape v_shape
+      set size v_size
+      set color v_color
+      set is-station? is-public-transport?
+    ]
+  ]
+  report one-of vertices-on patch x y
+end
+    
+to create-edges-and-vertices [vectordataset l_color l_width v_color v_size v_shape is-public-transport?]  
+  foreach gis:feature-list-of vectordataset [
+    let feature ?
+    foreach gis:vertex-lists-of feature [
+      let firstpoint create-vertex-at gis:location-of first ? v_color v_size v_shape is-public-transport?
+      let lastpoint create-vertex-at gis:location-of last ? v_color v_size v_shape is-public-transport?
+      if not ((firstpoint = lastpoint) or (firstpoint = nobody) or (lastpoint = nobody)) [
+        ask firstpoint [
+          if-else is-public-transport? [
+             create-transit-with lastpoint [
+               set color l_color
+               set thickness l_width
+               
+             ]
+          ] [
+             create-road-with lastpoint [
+               set color l_color
+               set thickness l_width 
+               set capacity gis:property-value feature "capacity"
+               set max-speed gis:property-value feature "avgspeed"
+             ]
+          ]
+;          create-link-with lastpoint [
+;            set color l_color
+;            set thickness l_width
+;            if-else is-public-transport? [ set breed transits ] [ set breed roads ]            
+;          ]
+        ]
+      ]  
+    ]
+  ]
+end
+
+  
+to clear-canvas [colour]
+  ask patches [ 
+    set pcolor colour
+  ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -382,7 +471,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.4
+NetLogo 5.0.2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
