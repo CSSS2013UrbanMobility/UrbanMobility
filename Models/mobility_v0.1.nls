@@ -1,0 +1,226 @@
+
+
+
+;**********INITIALISATION / SETUP**********
+
+to setup-model
+  
+  setup-agents
+  setup-cars
+  
+end
+
+to setup-agents
+  
+  ;suppression de tout l'existant//////////////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+  __clear-all-and-reset-ticks
+  
+  ask patches [
+    
+    sprout-individuals nb-workers
+    [       
+      set activity "worker"
+      ;pour voir tous les shapes définis : tools / turtle shapes editor
+      set shape "sheep"    
+      ;définition de la couleur voulue
+      set color green
+      ; definition des coordonnées de départ
+      set home-x xcor
+      set home-y ycor  
+      
+      ;work coord
+      let x 0 let y 0
+      ask one-of patches with [offices? = true] [
+        set x pxcor
+        set y pycor
+      ]      
+      set office-x x
+      set office-y y 
+      
+      ;leisure coord
+      ask one-of patches with [leisure? = true] [
+        set x pxcor
+        set y pycor
+      ]      
+      set leisure-x x
+      set leisure-y y  
+      
+      ;work schedule      
+      set work-start random 5 + 6
+      set work-end random 5 + 16
+      
+      ;leisure schedule 
+      let leisure-day random 10
+      
+      ifelse  leisure-day < 7 [
+        ;nothing
+      ][ 
+        ifelse leisure-day < 8 [ ;leisure at the end of the working day          
+          set leisure-start work-end
+          set leisure-end (leisure-start + 2)          
+          ][ ;leisure at noon          
+          set leisure-start work-start + 4
+          set leisure-end (leisure-start + random 2 + 1)          
+          ]
+      ] ; end ifelse
+          
+    ]
+    
+    
+    sprout-individuals nb-unemployed
+    [ 
+      set activity "inactive" 
+      ;pour voir tous les shapes définis : tools / turtle shapes editor
+      set shape "cow"
+      ;définition de la couleur voulue
+      set color red
+      ; definition des coordonnées de départ
+      set home-x xcor
+      set home-y ycor
+      
+      ;leisure coord
+      let x 0 let y 0
+      ask one-of patches with [leisure? = true] [
+        set x pxcor
+        set y pycor
+      ]      
+      set leisure-x x
+      set leisure-y y 
+      
+      ;leisure schedule
+      set leisure-start random 12 + 10
+      set leisure-end leisure-start + 4
+    ]  
+    
+    sprout-individuals nb-students
+    [
+      
+      set activity "student"
+      ;pour voir tous les shapes définis : tools / turtle shapes editor
+      set shape "turtle"
+      ;définition de la couleur voulue
+      set color blue      
+      ; definition des coordonnées de départ
+      set home-x xcor
+      set home-y ycor
+      
+      ;university coord
+      set university-x [pxcor] of one-of patches with [university? = true]
+      set university-y [pycor] of one-of patches with [university? = true]
+      
+      ;leisure coord
+      let x 0 let y 0
+      ask one-of patches with [leisure? = true] [
+        set x pxcor
+        set y pycor
+      ]      
+      set leisure-x x
+      set leisure-y y 
+      
+      ;university schedule
+      set university-start random 3 + 8
+      set university-end random 3 + 15
+      
+      ;leisure schedule 
+      let leisure-day random 10
+      
+      ifelse  leisure-day < 7 [
+        ;nothing
+      ][ 
+        ifelse leisure-day < 8 [  ;leisure at the end of the university day           
+          set leisure-start university-end
+          set leisure-end (leisure-start + 2)          
+          ][  ;leisure at noon          
+          set leisure-start university-start + 3
+          set leisure-end (leisure-start + random 4 + 1)          
+          ]
+      ] ; end ifelse
+      
+      
+    ]
+  
+ ]
+    
+end
+
+to setup-cars    
+  
+  ask patches [
+    
+    let nb-current 0
+  
+    while [nb-current < nb-cars] [
+      
+      let affect random 100
+      ifelse affect < 70 [;workers
+        ask one-of individuals-here with [car-owner? = false and activity = "worker"] [set car-owner? true]
+        
+      ] 
+      [
+        ifelse affect < 90 [;unemployeds
+          ask one-of individuals-here with [car-owner? = false and activity = "inactive"] [set car-owner? true]
+          
+        ]
+        
+        [;students
+          ask one-of individuals-here with [car-owner? = false and activity = "student"] [set car-owner? true]
+          
+        ]
+      ]
+      
+      set nb-current nb-current + 1
+      
+    ] ; end while
+  
+  ] ; end ask patches
+  
+end
+
+to find-destination
+  
+
+ask individuals with [activity = "worker"] [choose-transport office-x office-y]
+ask individuals with [activity = "student"] [choose-transport university-x university-y]
+ask ;//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+  
+end
+
+
+
+
+to choose-transport [destination-x destination-y]
+  
+  let kind-t 0
+  
+  ifelse car-owner? = false [
+    ;no car
+    ifelse  any? patches with [(pxcor = destination-x and pycor = destination-y) in-radius 20] [
+      ;office less 20min walk
+      set kind-t "W"      
+      ][
+      ;office more 20min walk
+      set kind-t "T"  
+      ]
+    ][
+    ;car
+    ifelse any? patches with [(pxcor = destination-x and pycor = destination-y) in-radius 20][
+      ;office less 20min walk
+      ifelse random 2 != 1 [set kind-t "W" ][set kind-t "C" ]           
+      ][
+      ;office more 20min walk
+      
+    ifelse  any? stations in-radius 10 [
+      ;T less 10min walk
+      ifelse random 4 != 3 [set kind-t "C" ][set kind-t "T" ] 
+    ][
+    ;T more 10min walk
+      set kind-t "C"           
+    ]
+        
+      ] ; distance to the office
+    
+    ] ; end ifelse car
+  
+end
+
+
