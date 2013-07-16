@@ -84,7 +84,6 @@ to move-in-current-edge
       ;;reroute procedure.
       reroute
       
-      
     ]
     
 end
@@ -93,9 +92,15 @@ end
 to reroute
   ;;first of all check condition
   let hypothetical-next-edge first current-path
-  ;if ;congestion-on-edge > individual
-
-
+  ifelse true [;congestion-on-edge >= individual-tolerance-for-congestion
+    ;;reroute procedure : find in 
+    
+  ]
+  [
+    set current-edge hypothetical-next-edge
+    set current-path but-first current-path
+    set remaining-distance-in-edge [link-length] of current-edge
+  ]
 end
 
 

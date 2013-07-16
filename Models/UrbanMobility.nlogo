@@ -85,6 +85,8 @@ individuals-own[
  remaining-distance-in-edge
  remaining-time-in-tick
  
+ individual-tolerance-for-congestion
+ 
  ;;list of the path that has to be executed
  current-path
 
