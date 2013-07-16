@@ -1,0 +1,87 @@
+to test-three-best-paths
+  
+  ask individuals [die]
+  ask roads [set max-speed 1]
+  create-individuals 1 [setxy 20 12 set travel-destinations (list (list -24 -13))
+    
+    setup-prefered-paths
+    show prefered-paths
+    foreach prefered-paths [
+      foreach ? [
+        foreach ? [
+         ask ? [set color green set thickness 0.3]
+        ]
+      ] 
+    ]
+    ]
+end
+
+
+to setup-for-test
+  ca
+  let paths-layer-data gis:load-dataset "../Data/testproj.shp"
+  gis:set-world-envelope gis:envelope-of paths-layer-data
+  gis:set-drawing-color blue
+  gis:draw paths-layer-data 1
+  
+  foreach gis:feature-list-of paths-layer-data [
+    let abstract nobody
+    let current-vertex nobody
+    create-abstract-gis-paths 1 [set gis-feature ? new-abstract-gis-path set abstract self]
+    foreach gis:vertex-lists-of ? [
+      foreach list first ? last ? [
+       let loc gis:location-of ? if loc != [][
+       create-vertices 1 [
+         setxy min list first loc max-pxcor min list first but-first loc max-pycor
+         new-vertex 
+         ask abstract [set vertices-list lput myself vertices-list]
+         ifelse current-vertex = nobody [set current-vertex self][ask current-vertex [create-road-with myself [new-path]] set current-vertex self]
+         ]
+         
+       ]
+      ]
+      set current-vertex nobody
+    ]
+  ]
+  
+  
+  ;;try a simple local clusterize?
+
+  set remaining-vertices to-list vertices
+  while [length remaining-vertices > 0][
+    let v first remaining-vertices set remaining-vertices remove v remaining-vertices ask v [set color blue]
+    ask v [fusion-neighbors]
+  ]
+  
+  
+end
+
+
+
+to fusion-neighbors
+  set cluster-treshold 1
+   let neigh other vertices in-radius cluster-treshold
+   if count neigh > 0 [
+    let n nobody
+    let x mean [xcor] of neigh
+    let y mean [ycor] of neigh
+    hatch-vertices 1 [
+      set n self
+      setxy x y
+      ask neigh [
+         set remaining-vertices remove self remaining-vertices
+         ask my-roads [if not member? other-end neigh and other-end != n [ask other-end [create-road-with n]] die]
+         die
+      ]
+    ]
+    ask my-roads [if not member? other-end neigh and other-end != n [ask other-end [create-road-with n]] die]
+    die
+   ]
+end
+
+
+to test-network
+  snapshot
+  ask one-of vertices[ask one-of other vertices[let p nw:weighted-path-to myself "path-length" show p if p != false [foreach p [ask ? [set color green set thickness 0.2]]] ]]
+end
+
