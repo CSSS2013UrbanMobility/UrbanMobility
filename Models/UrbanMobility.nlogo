@@ -4,14 +4,18 @@
 ;;;;;;;;;;;;;;;;;;;;;
 
 
-extensions[nw gis]
+extensions[nw gis array]
 
 __includes[
   ;;source files
   "routing.nls" 
   "routing-setup.nls"
   "routing-tests.nls"
-  ;"mobility_v0.1.nls"
+  "mobility.nls"
+  "patches-setup.nls"
+  "load-network.nls"
+  "output.nls"
+  "codePatches.nls"
   
   ;;utilities
   "utils/NetworkUtilities.nls"
@@ -20,10 +24,13 @@ __includes[
 
 globals[
   ;;real time interval for a tick
-  tick-time-interval
+  ;tick-time-interval  
+  nb-ticks
+  step
   
-  ;;individual creation parameters
-  nb-workers
+  ;;network import functions
+  pt-network
+  road-network
   
   
   
@@ -34,10 +41,29 @@ globals[
   
   epsilon-prefered-paths
   
+  
+  
+  ;;vars for output calculation
+  km-congested ;; to init at 0
+  ;congestion-threshold ;; to decide when a road is considered as congested : used in the outputs -> length-of-congestion !!!!!!!! We should use a slider ?
+  travelling ;; number of people travelling
+  travelling-by-car ;; number of people travelling by car
+  travelling-by-foot ;; number of people travelling by foot
+  travelling-by-transportation  ;; number of people travelling by public transportation
+  
+  nb-clusters ;; Number of clusters we need
+  km-congested-per-cluster ;; Array of length nb-clusters which contains the nb of congested kilometers per cluster
+
+  
+  
+  
+  
+  
   ;;utility variables
   remaining-vertices
   cluster-treshold
   remaining-links
+  paths-setup
 ]
 
 
@@ -65,8 +91,34 @@ individuals-own[
   
   
   ;;
-  travel-destinations
+  time-schedule
+  space-schedule
   
+  
+  
+  ;;;;;;;;;;;;;;;
+  ;; Individual properties
+  ;;;;;;;;;;;;;;;
+  
+  car-owner?
+  activity   ; Can be worker, student or inactive
+  home-x
+  home-y
+  office-x
+  office-y  
+  leisure-x
+  leisure-y
+  university-x
+  university-y
+  work-start
+  work-end
+  leisure-start
+  leisure-end
+  university-start
+  university-end
+  
+  preference
+  car-taken?
   
   
  ;;;;;;;;;;;;;
@@ -89,19 +141,27 @@ individuals-own[
  
  ;;list of the path that has to be executed
  current-path
+ 
+ current-alternative-routes
 
  current-position ;couple of coordinates
+ 
+ 
+ ;;output
+ cluster-vertex
+ 
 ]
 
-roads-own[
+links-own[
+   ;;average speed in edge
+  avg-speed
+  min-travel-time
+  
  ;;real length of road
- road-length
+ length-of-edge
   
  ;;capacity of road : unit : Number of cars
  capacity
- 
- ;;authorized speed in edge
- max-speed
  
  ;;intermediary var for weighted paths
  weight
@@ -111,19 +171,78 @@ roads-own[
  
 ]
 
+
+
+
+
+vertices-own[
+  is-station?
+]
+
+
+
 abstract-gis-paths-own [
    gis-feature
    vertices-list
 ]
+
+
+
+patches-own[
+  nb-cars
+  nb-workers
+  nb-inactives
+  nb-students
+  university?
+  offices?
+  leisure?
+]
+
+
+
+to setup-model
+  
+  __clear-all-and-reset-ticks
+  resize-world 0 50 0 50
+  set-patch-size 12
+  
+  set step tick-time-interval
+  
+  load-networks
+  
+  import-patches
+  setup-agents
+  ;setup-cars
+  
+  
+  correct-bugs
+  
+  setup-routing
+  
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
 10
-1013
-652
-30
-23
-13.0
+832
+653
+-1
+-1
+12.0
 1
 10
 1
@@ -133,15 +252,151 @@ GRAPHICS-WINDOW
 1
 1
 1
--30
-30
--23
-23
+0
+50
+0
+50
 0
 0
 1
 ticks
 30.0
+
+SLIDER
+11
+62
+103
+95
+workers
+workers
+0
+100
+5
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+110
+62
+202
+95
+students
+students
+0
+100
+5
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+11
+98
+103
+131
+inactives
+inactives
+0
+100
+5
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+110
+98
+202
+131
+car-percentage
+car-percentage
+0
+100
+75
+1
+1
+NIL
+HORIZONTAL
+
+BUTTON
+13
+17
+68
+50
+setup
+setup-model
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SLIDER
+853
+10
+1025
+43
+tick-time-interval
+tick-time-interval
+0
+1
+0.1
+0.05
+1
+NIL
+HORIZONTAL
+
+SLIDER
+855
+49
+1044
+82
+congestion-threshold
+congestion-threshold
+0
+1
+0.8
+0.1
+1
+NIL
+HORIZONTAL
+
+MONITOR
+1307
+12
+1364
+57
+indiv
+count individuals
+17
+1
+11
+
+OUTPUT
+10
+222
+205
+361
+8
+
+MONITOR
+10
+133
+60
+178
+paths
+paths-setup
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?

@@ -1,15 +1,25 @@
-__includes ["mobility_v0.1.nls"]
+__includes ["mobility_v0.1.nls" "patches-setup.nls"]
 
 ;**********CREATION DES INDIVIDUS**********
 
+globals [nb-ticks step]
+
 breed [individuals individual]
+breed [vertices vertice]
 ;breed [unemployeds unemployed]
 ;breed [students student]
 
 
 ;**********ATTRIBUTS**********
 
+vertices-own[
+  is-station?
+]
+
 individuals-own[ 
+  time-schedule
+  space-schedule
+  
   car-owner?
   activity   ; Can be worker, student or inactive
   home-x
@@ -26,6 +36,9 @@ individuals-own[
   leisure-end
   university-start
   university-end
+  
+  preference
+  car-taken?
 ]
 
 ;unemployeds-own[ 
@@ -59,7 +72,7 @@ individuals-own[
 patches-own[
   nb-cars
   nb-workers
-  nb-unemployed
+  nb-inactives
   nb-students
   university?
   offices?
@@ -92,6 +105,83 @@ GRAPHICS-WINDOW
 1
 ticks
 30.0
+
+SLIDER
+758
+64
+931
+98
+workers
+workers
+0
+100
+50
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+766
+122
+939
+156
+students
+students
+0
+100
+50
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+768
+180
+941
+214
+inactives
+inactives
+0
+100
+50
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+767
+238
+940
+272
+car-percentage
+car-percentage
+0
+100
+50
+1
+1
+NIL
+HORIZONTAL
+
+BUTTON
+44
+53
+108
+87
+setup
+setup-model
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -436,7 +526,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.4
+NetLogo 5.0.3
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

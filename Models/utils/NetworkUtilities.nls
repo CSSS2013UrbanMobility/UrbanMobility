@@ -173,7 +173,7 @@ end
 
 to snapshot
   nw:set-snapshot vertices roads
-  ask roads [let dd 0 let e2 end2 ask end1 [set dd distance e2 ] set road-length dd]
+  ask roads [let dd 0 let e2 end2 ask end1 [set dd distance e2 ] set length-of-edge dd]
 end
 
 ;;beware, need snapshot before !
@@ -181,7 +181,7 @@ to-report distance-through-network [target-turtle]
   let origin first sort-on [distance myself] vertices
   let destination nobody ask target-turtle [set destination first sort-on [distance myself] vertices]
   let res 0
-  ask origin [set res nw:weighted-distance-to destination "road-length"]
+  ask origin [set res nw:weighted-distance-to destination "length-of-edge"]
   ;if res = false [ask origin [set size 3 set hidden? false] ask destination [set size 3 set hidden? false]]  ;;Hardcore DEBUG
   if res = false [set res 0] ;;Beware : in theory infinity, but for norms calculations, just not taken into account, so ok ; for other use not coherent behavior
   ;; SO : network MUST be connex !!!

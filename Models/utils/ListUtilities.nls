@@ -20,3 +20,15 @@ to-report norm-p [p l]
   foreach l [set res res + (? ^ p)]
   report (res / n) ^ (1 / p)
 end
+
+
+
+
+;;concat of 2 list
+to-report concat [l1 l2]
+  foreach l2 [
+    set l1 lput ? l1
+  ]
+  report l1
+end
+

@@ -1,0 +1,261 @@
+
+
+
+
+
+
+
+to setup-agents
+  
+  ask patches [   
+    sprout-individuals nb-workers
+    [       
+      ;workers definition
+      set activity "worker" set shape "sheep" set color green
+      
+      ; home coord (start coord of workers)
+      set home-x xcor set home-y ycor
+      
+      ;work coord
+      let x 0 let y 0 ask one-of patches with [offices? = true] [set x pxcor set y pycor] 
+      set office-x x set office-y y
+      ;leisure coord
+      ask one-of patches with [leisure? = true] [set x pxcor set y pycor]    
+      set leisure-x x set leisure-y y  
+            
+      ;work schedule      
+      set work-start round ((random-float 5 + 6) / step) set work-end round ((random-float 5 + 16) / step)
+      
+      ;lists (spce and time)
+      set space-schedule (list list office-x office-y)
+      set time-schedule (list work-start)
+      
+      ;leisure schedule 
+      let leisure-day random 10
+      
+      ifelse  leisure-day < 7 [
+        ;nothing add in lists WHAT?
+        set space-schedule lput (list home-x home-y) space-schedule
+        set time-schedule lput work-end time-schedule      
+      ][ 
+        ifelse leisure-day < 8 [
+          ;leisure at the end of the working day
+          set leisure-start work-end + 2
+          set leisure-end round (leisure-start + 2) / step
+          ;add in lists
+          set space-schedule lput (list home-x home-y) lput (list leisure-x leisure-y) space-schedule
+          set time-schedule lput leisure-end lput leisure-start time-schedule
+          ][ 
+          ;leisure at noon          
+          set leisure-start work-start + 4
+          set leisure-end round (min list 23.9 leisure-start + (random-float 2 + 1) / step)   
+          ;add in lists
+          set space-schedule lput (list home-x home-y) lput (list office-x office-y) lput (list leisure-x leisure-y) space-schedule
+          set time-schedule lput  work-end lput leisure-end lput leisure-start time-schedule
+          ]
+      ] ; end ifelse
+         
+    ] ; end sprouts
+    
+    
+    sprout-individuals nb-inactives[
+      ;inactives definition
+      set activity "inactive" set shape "fish" set color red set home-x xcor set home-y ycor
+      let leisure-day random 2
+      
+      if leisure-day != 1 [
+        let x 0 let y 0
+        ask one-of patches with [leisure? = true] [set x pxcor set y pycor]      
+        set leisure-x x set leisure-y y 
+        
+        ;leisure schedule
+        set leisure-start round ((random-float 12 + 10) / step)
+        set leisure-end leisure-start + round (4 / step)
+        
+        set space-schedule (list (list leisure-x leisure-y) (list home-x home-y) )
+        set time-schedule (list leisure-start leisure-end)
+      ]
+      
+    ] ; end sprouts  
+    
+    sprout-individuals nb-students[   
+      ;students definition
+      set activity "student" set shape "turtle" set color blue set home-x xcor set home-y ycor
+      set university-x [pxcor] of one-of patches with [university? = true] set university-y [pycor] of one-of patches with [university? = true]      
+      set leisure-x [pxcor] of one-of patches with [leisure? = true] set leisure-y [pycor] of one-of patches with [leisure? = true]
+      
+      ;university schedule
+      set university-start round ((random-float 5 + 8) / step)
+      set university-end round ((random-float 5 + 15) / step)
+      
+      ;lists (space and time)
+      set space-schedule (list list university-x university-y)
+      set time-schedule (list university-start)
+      
+      
+      ;leisure schedule 
+      let leisure-day random 10
+      
+      ifelse  leisure-day < 7 [
+        ;nothing
+        ;add in lists
+        set space-schedule lput (list home-x home-y) space-schedule
+        set time-schedule lput university-end time-schedule
+      ][ 
+        ifelse leisure-day < 8 [  
+          ;leisure at the end of the university day           
+          set leisure-start university-end + 2
+          set leisure-end leisure-start + (round 2 / step )
+          ;add in lists
+          set space-schedule lput (list home-x home-y) lput (list leisure-x leisure-y) space-schedule
+          set time-schedule lput leisure-end lput leisure-start time-schedule   
+          ][  
+          ;leisure at noon          
+          set leisure-start university-start + round (3 / step)
+          set leisure-end (leisure-start + round ((random-float 4 + 1) / step))   
+          ;add in lists  
+          ; C'est une liste de liste. C'est juste illisible, mais c'est juste commenté.
+          set space-schedule lput (list home-x home-y) lput (list university-x university-y) lput (list leisure-x leisure-y) space-schedule
+          set time-schedule lput university-end lput leisure-end lput leisure-start time-schedule   
+          ]
+      ] ; end ifelse
+      
+      
+    ] ; end sprouts
+  
+ ] ; end ask patches
+  
+  ;reinitialisation of car-taken
+  ask individuals [set car-taken? false set hidden? true]
+    
+end
+
+
+; procedure which attribuates cars 
+to setup-cars    
+  
+  ask patches [
+    
+    let nb-current 0
+  
+    while [nb-current < nb-cars] [
+      
+      let affect random 100
+      ; over 100 people : 70% of workers have cars, 20% of inactives have cars, 10% of students have cars
+      
+      ifelse affect < 70 [
+        ;workers
+        if any? individuals-here with [car-owner? = false and activity = "worker"] [
+          ask one-of individuals-here with [car-owner? = false and activity = "worker"] [set car-owner? true]
+          set nb-current nb-current + 1
+        ]
+      ] 
+      [
+        ifelse affect < 90 [
+          ;inactives
+          if any? individuals-here with [car-owner? = false and activity = "inactive"] [
+            ask one-of individuals-here with [car-owner? = false and activity = "inactive"] [set car-owner? true]
+            set nb-current nb-current + 1
+          ]
+        ]        
+        [
+          ;students
+          if any? individuals-here with [car-owner? = false and activity = "student"] [
+            ask one-of individuals-here with [car-owner? = false and activity = "student"] [set car-owner? true]
+            set nb-current nb-current + 1
+          ]
+          
+        ]
+      ] 
+      
+    ] ; end while
+  
+  ] ; end ask patches
+  
+end
+
+
+
+
+; procedure to affect destination [object = (work, pleasure or back-home)]
+to find-destination [object]
+  
+  if object = "work" [  
+    
+    if activity = "worker" [choose-transport office-x office-y]
+    ;deplacement
+    
+    if activity = "student" [choose-transport university-x university-y]
+    ;deplacement
+
+  ] ; end work
+  
+  
+   if object = "pleasure" [  
+    
+    ifelse car-taken? = true [
+    
+      ask individuals [choose-transport leisure-x leisure-y]
+      ;deplacement
+      
+    ][
+    
+      set car-owner? false
+      ask individuals [choose-transport leisure-x leisure-y]
+      ;deplacement
+    
+    ]
+  ] ; end pleasure
+   
+   
+   if object = "back-home" [  
+    
+    ifelse car-taken? = true [set preference "CAR"]
+    [ set car-owner? false
+      ask individuals [choose-transport leisure-x leisure-y]
+    ]
+    ;deplacement
+    
+  ] ; end back-home
+  
+  
+  
+end
+
+
+
+; procedure to choose a mean of transport
+to choose-transport [destination-x destination-y]
+  
+  ifelse car-owner? = false [
+    ;no car
+    ifelse  any? patches with [(pxcor = destination-x and pycor = destination-y)] in-radius 20 [
+      ;office less 20min walk
+      set preference "WALK"      
+      ][
+      ;office more 20min walk
+      set preference "TRANSPORTATION"  
+      ]
+    ][
+    ;car
+    ifelse any? patches with [(pxcor = destination-x and pycor = destination-y)] in-radius 20 [
+      ;office less 20min walk
+      ifelse random 2 != 1 [set preference "WALK" ][set preference "CAR" set car-taken? true]           
+      ][
+      ;office more 20min walk
+      
+    ifelse  any? vertices with [is-station? = true] in-radius 10 [
+      ;T less 10min walk
+      ifelse random 4 != 3 [set preference "CAR" set car-taken? true][set preference "TRANSPORTATION" ] 
+    ][
+    ;T more 10min walk
+      set preference "CAR"           
+    ]
+        
+      ] ; distance to the office
+    
+    ] ; end ifelse car
+  
+end
+
+

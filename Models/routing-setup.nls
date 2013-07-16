@@ -5,6 +5,7 @@
 
 
 to setup-routing
+  
   ;;here set specific variables, prefered paths etc
   set begin-congestion-treshold 0.7
   set max-congestion-treshold 1
@@ -13,11 +14,17 @@ to setup-routing
   
   
   ;;ask individuals here to set their own routing variables, better for code separation
+  set paths-setup count individuals
   ask individuals [
     setup-prefered-paths
     
     set times-rerouted 0
     set individual-tolerance-for-congestion 1
+    set paths-setup paths-setup - 1
+  ]
+  
+  ask roads [
+    set people-in-edge []
   ]
   
 
@@ -30,7 +37,7 @@ to setup-prefered-paths
   set prefered-paths []
   
   let origin one-of vertices with-min [distance myself] let destination nobody
-  foreach travel-destinations [
+  foreach space-schedule [
     set destination one-of vertices with-min [distance patch first ? first but-first ?]
     set prefered-paths lput three-best-paths origin destination prefered-paths
     set origin destination
@@ -42,7 +49,7 @@ to-report three-best-paths [origin destination]
   ;;get shortest path
   let first-path [] let second-path [] let third-path []
   nw:set-snapshot vertices roads
-  ask roads [set weight link-length / max-speed]
+  ask roads [set weight link-length / avg-speed]
   ask origin [set first-path nw:weighted-path-to destination "weight"]
   
    nw:set-snapshot vertices roads

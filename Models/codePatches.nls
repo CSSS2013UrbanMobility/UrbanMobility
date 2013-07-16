@@ -1,0 +1,8 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; patches function to save furnitures
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+to correct-bugs
+  ask individuals with [time-schedule = 0 or space-schedule = 0][die]
+  
+end

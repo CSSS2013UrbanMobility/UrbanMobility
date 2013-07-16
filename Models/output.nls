@@ -1,3 +1,214 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Report procedures for output of the model
-;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;REPORTERS ABOUT CONGESTION ON EDGES------------------------------------------------------------------
+;;Get the congestion of one road at one tick
+to-report congestion-on-edge
+  report length people-in-edge / capacity
+end
+
+;;Get the average congestion of the network at one tick
+to-report avg-congestion-on-edge
+  let congestion 0
+  ask roads [
+     set congestion congestion + congestion-on-edge
+  ]
+  report congestion / count roads
+end
+;;; !!!!!!!! We should plot congestion at each tick ------------------------------------------------
+
+
+
+;;REPORTERS ABOUT TRAVEL TIME---------------------------------------------------------------------------
+;;for each agent, we call this function and aggregate the results
+to-report travel-time
+  ;; let travel-time  end-tick - departure-tick
+  ;;TAKE INTO ACCOUNT THAT IT'S POSSIBLE THAT THE GUY is doing several journeys
+  ;; report travel-time
+end
+;;Average time of all the agents
+to-report avg-travel-time
+  ;; let total-time 0
+  ;; ask individuals [
+  ;;   set total-time total-time + travel-time
+  ;; ]
+  ;; report total-time / count individuals
+end
+
+
+
+;;;;;REPORTERS ABOUT CONGESTION LENGTH IN KILOMETERS--------------------------------------------------------
+
+;;for each edge at each tick, if it's congested, it returns its length
+;;we aggregate it and it gives us the number of kilometer congested * ticks
+;;We can divide it by the number of tick to have an average number of kilometers congested by tick
+
+;;for each edge at each tick, if it's congested, it returns its length
+to-report length-of-congestion
+  ifelse congestion-on-edge > congestion-threshold [
+    report length-of-edge
+  ] [
+    report 0
+  ]
+end
+
+;;Called at each tick, add the length of congestion to the global variable km-congested
+;; !!! km-congested has to be init at 0
+to update-length-of-congestion
+  ask roads [
+    set km-congested km-congested + length-of-congestion
+  ]
+end
+
+;;Return the avg-length of congestion at one moment in the network
+to-report avg-length-of-congestion
+  report km-congested / count roads
+end
+
+
+
+
+;;REPORTERS ABOUT THE SHARE OF EACH KIND OF DUDE ;;;;----------------------------------------------------------------
+to-report percentage-by-car
+  report travelling-by-car / travelling * 100
+end
+
+to-report percentage-by-transportation
+  report travelling-by-transportation / travelling * 100
+end
+
+to-report percentage-by-foot
+  report travelling-by-foot / travelling * 100
+end
+
+
+
+;;REPORTERS ABOUT UNBALANCED CONGESTION IN THE NETWORK ;;;;------------------------------------------------------
+to clustering-edges
+  nw:set-snapshot vertices roads
+  let clusters nw:k-means-clusters nb-clusters 500 0.01
+  let i 0
+  ;;we iterate over the list of list
+  foreach clusters [
+    let current-cluster ? ;;We get a list which is a cluster
+    foreach current-cluster [ ;; We iterate over the cluster -> we get vertices
+      ask ? [  ;; for each of this vertices, we ask to
+        ask my-links [ ;; for each of the links of these vertices
+            set cluster-vertex i ;; le cluster-vertex
+          ]
+      ]
+    ]
+    set i i + 1
+  ]
+end
+
+
+to congestion-per-cluster-i [i] 
+  ;;For the roads in the cluster i
+  ask roads with [[cluster-vertex] of end2  = i or [cluster-vertex] of end1 = i] [
+    ;;Add the number of kilometers of congestion given by length-of-congestion to the num number of kilometers of congestion already in the array
+    array:set km-congested-per-cluster i array:item km-congested-per-cluster i + length-of-congestion
+  ]
+end
+
+
+;;Calculate the number of congested kilometers per cluster
+to congestion-per-cluster 
+  let i 0
+  while [ i < nb-clusters] 
+  [ 
+    congestion-per-cluster-i i
+    set i i + 1
+  ]
+end
+
+;;By using the average number of congested kilometers in the whole graph, we calculate "kind of" a standard deviation between this average number and the number of kilometers congested in each cluster
+to-report std-deviation-over-cluster
+  let average avg-length-of-congestion
+  let i 0
+  let somme 0
+  while [ i < nb-clusters] 
+  [ 
+    set somme somme + (average - array:item km-congested-per-cluster i) * (average - array:item km-congested-per-cluster i)
+    set i i + 1
+  ]
+  report sqrt somme
+end
+
+;;INIT 
+to init-array-of-km-congestioned-per-cluster
+  set km-congested-per-cluster array:from-list n-values 5 [0]
+end
+
+
+
+
+;;;---------------------USELESS functions-------------------------------------------------------------
+;;% d'agents by transports
+to-report by-transportation? 
+;  ifelse next_travel_type = "TRANSPORTATION" [
+;    report 1
+;  ] [
+;    report 0
+;  ]
+end
+
+;% of agents by car
+to-report by-car? 
+;  ifelse next_travel_type = "CAR" [
+;    report 1
+;  ] [
+;    report 0
+;  ]
+end
+
+;% of agent by foot
+to-report by-walk? 
+;  ifelse next_travel_type = "WALK" [
+;    report 1
+;  ] [
+;    report 0
+;  ]
+end
+
+;to-report is-travelling?
+;  ifelse is-travelling [
+;    report 1
+;  ][
+;    report 0
+;  ]
+;end
+
+;to-report nb-of-individuals-travelling
+;  let number-of-travelers 0
+;  ask individuals [
+;    set number-of-travelers number-of-travelers + is-travelling?
+;  ]
+;end
+
+;to-report percentage-by-car
+;;  let by-car 0
+;;  let number-of-travelers 0
+;;  ask individuals with [is-travelling? = true] [
+;;    set by-car by-car + by-car?
+;;    set number-of-travelers number-of-travelers + 1
+;;  ]
+;;  report by-car / nb-of-travelers * 100
+;end
+;
+;to-report percentage-by-transportation
+;;  let by-transportation 0
+;;  let number-of-travelers 0
+;;  ask individuals with [is-travelling? = true] [
+;;    set by-transportation by-transportation + by-transportation?
+;;    set number-of-travelers number-of-travelers + 1
+;;  ]
+;;  report by-transportation / nb-of-travelers * 100
+;end
+;
+;to-report percentage-by-walk
+;;  let by-walk 0
+;;  let number-of-travelers 0
+;;  ask individuals with [is-travelling? = true] [
+;;    set by-walk by-walk + by-walk?
+;;    set number-of-travelers number-of-travelers + 1
+;;  ]
+;;  report by-walk / nb-of-travelers * 100
+;end
