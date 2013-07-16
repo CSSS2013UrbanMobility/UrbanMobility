@@ -11,6 +11,7 @@ __includes[
   "routing.nls" 
   "routing-setup.nls"
   "routing-tests.nls"
+  ;"mobility_v0.1.nls"
   
   ;;utilities
   "utils/NetworkUtilities.nls"
@@ -21,7 +22,17 @@ globals[
   ;;real time interval for a tick
   tick-time-interval
   
+  ;;individual creation parameters
+  nb-workers
   
+  
+  
+  ;;movement parameters
+  begin-congestion-treshold
+  max-congestion-treshold
+  min-congestion-speed
+  
+  epsilon-prefered-paths
   
   ;;utility variables
   remaining-vertices
@@ -50,6 +61,17 @@ undirected-link-breed [transits transit]
 
 
 individuals-own[
+  
+  
+  
+  ;;
+  travel-destinations
+  
+  
+  
+ ;;;;;;;;;;;;;
+ ;;variables for path calculation and traveling
+ ;;;;;;;;;;;;;
  prefered-paths
 
  next-travel-start
@@ -57,8 +79,14 @@ individuals-own[
 
  is-travelling?
 
+ times-rerouted
+
  current-edge
  remaining-distance-in-edge
+ remaining-time-in-tick
+ 
+ ;;list of the path that has to be executed
+ current-path
 
  current-position ;couple of coordinates
 ]
@@ -89,10 +117,10 @@ abstract-gis-paths-own [
 GRAPHICS-WINDOW
 210
 10
-649
-470
-16
-16
+1013
+652
+30
+23
 13.0
 1
 10
@@ -103,10 +131,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--16
-16
--16
-16
+-30
+30
+-23
+23
 0
 0
 1

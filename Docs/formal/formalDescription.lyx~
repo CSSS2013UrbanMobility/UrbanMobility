@@ -349,13 +349,13 @@ leq n'})=
 \backslash
 sum_{i=1}^{min(n,n')}(a_{i}-a'_{i})^{2}+
 \backslash
-mathbbm{1}_{n=n'}
+bbm{1}_{n=n'}
 \backslash
 cdot +
 \backslash
 infty +
 \backslash
-mathbbm{1}_{a_{1}=a'_{1}&a_{min(n,n')}=a'_{min(n,n')}}
+bbm{1}_{a_{1}=a'_{1}&a_{min(n,n')}=a'_{min(n,n')}}
 \backslash
 cdot +
 \backslash

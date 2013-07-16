@@ -1,3 +1,22 @@
+to test-three-best-paths
+  
+  ask individuals [die]
+  ask roads [set max-speed 1]
+  create-individuals 1 [setxy random-xcor random-ycor set travel-destinations (list (list random-xcor random-ycor))
+    
+    setup-prefered-paths
+    show prefered-paths
+    foreach prefered-paths [
+      foreach ? [
+        foreach ? [
+         ask ? [set color green set thickness 0.3]
+        ]
+      ] 
+    ]
+    ]
+end
+
+
 to setup-for-test
   ca
   let paths-layer-data gis:load-dataset "../Data/testproj.shp"
@@ -40,7 +59,7 @@ end
 
 
 to fusion-neighbors
-  set cluster-treshold 0.4
+  set cluster-treshold 1
    let neigh other vertices in-radius cluster-treshold
    if count neigh > 0 [
     let n nobody
