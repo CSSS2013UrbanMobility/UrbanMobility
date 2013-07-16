@@ -1,0 +1,129 @@
+%% LyX 2.0.5.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{luainputenc}
+\usepackage{amssymb}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{bbm}
+
+
+\usepackage{geometry}[0.5]
+
+\usepackage{background}
+
+
+%manage background
+\SetBgOpacity{0.3}
+\SetBgColor{black!20}
+
+\makeatother
+
+\usepackage{babel}
+\begin{document}
+
+\title{Daily urban mobility simulation using agent-based modeling\\
+$\begin{array}{ccc}
+\star &  & \star\\
+ & \star
+\end{array}$\\
+Formal description of the model}
+\maketitle
+\begin{abstract}
+We propose a simplified model of daily urban mobility that takes into
+account individual choices between different types of transport. Feedback
+from the positions of agents at micro-level gives integrated macro-flows
+in the street network whose influenced themselves local speed and
+sometimes route choices of agents. Flows have also a component representing
+externalities such as traffic from outside the city that we can't
+represent as agents. More than having an accurate model that we could
+well calibrate on real data, the aim is to explore the aspect of influence
+of decision-making rules, and that way of the type of population,
+on the global patterns. An other application is to proceed to multi-criteria
+optimisation on a modification of the public transport infrastructure.
+We present here the formal description of our model.
+\end{abstract}
+
+\section{Global framework}
+
+We work either on imaginary city or with projected geographic description
+of a real city, so the space on which individuals move is a subset
+$C\subset\mathbb{R}^{2}$. We suppose that the road network and public
+transportation network are represented by two Euclidian graphs, with
+$V=(x_{i},y_{i})_{1\leq i\leq n(G)}$ family of vertices, $G=(V,E)$
+with $E\subset V\times V$, and with respectively the same notations
+for $G'$. Furthermore, we assume the existence of an resistance function
+$r(\cdot,t)$ on the edges of the road network, which will be anisotropic
+in order to simplify the implementation, and that will depend on the
+current charge of the edge. For the public transport, speeds in edges
+only depend of time, and will be determined by real frequencies. For
+use of street network by foot, we assume that no congestion is possible
+so resistance is constant regarding time and charge. Edges also have
+fixed capacity $c$.
+
+The flow function on the edges $f(\cdot,t)$ will be used as an output
+of the model and in the expression of the resistance function to have
+feedback of traffic charge on agent speed.
+
+Time is discretised given a variable step $\tau$, for which the value
+is not supposed to influence the results under a certain precision
+treshold, which determination will be one of the first aims of the
+experiments.
+
+
+\section{Agents description}
+
+Agents can be of three different types, what has a direct consequence
+in their time-table and decision-making.
+
+The set of agents is described as $\mathcal{A}\simeq$ //ADD Formal
+agent Description
+
+
+\section{Movements in the city}
+
+Given the time-table of an agent $a\in\mathcal{A}$, represented as
+a function $T_{a}:D_{a}\rightarrow C$ with $D_{a}\in\mathcal{P}([0;24])$
+(most probably defined on finite subset), 
+
+
+\subsection{Decision-making}
+
+//Add decision making tree.
+
+
+\subsection{Travel by public transportation or foot}
+
+
+\subsection{Heuristic for agent travel by car}
+
+In order to get more realistic interactions between agents, we propose
+to add to the feedback of flows on agents speed by scale-coupling
+a local effect of roads charges on agent decision. Therefore, an agent
+can at any time of his travel modify the route he has planned. The
+structure of the heuristic we described here appears as a crucial
+point in the modeling process since all choices were made according
+to ``rational'' vision of human agents.
+
+Each agent has for each ``daily'' travel some fixed paths (let say
+arbitrary three) that he knows : $p=((p_{0},p_{1},p_{2})_{O_{i},D_{i}})_{i}$
+with $O_{i},D_{i}\in C$. The agent $a$ executes the route step by
+step by changing the position $(x_{a}(t+\tau),y_{a}(t+\tau))=m(t,p,a,r(e(a,t),t),c(e(a,t)),f(e(a,t),t))$
+with $e(a,t)$ the next edge in the planned path at time t. 
+
+
+\paragraph{Metric on paths in euclidian graph}
+
+To justify the used heuristic for ``prefered path'' calculation,
+we need a metric on path in graphs to justify the intuition that perturbing
+the shortest path and recalculating the shortest path will lead to
+a ``not so far'' path in the graph.
+
+To define an exact continuity, we need a total metric : a good candidate
+is $[d((a_{i})_{1\leq i\leq n},(a'_{j})_{1\leq j\leq n'})=\sum_{i=1}^{min(n,n')}(a_{i}-a'_{i})^{2}+\bbm{1}_{n=n'}\cdot +\infty +\bbm{1}_{a_{1}=a'_{1}&a_{min(n,n')}=a'_{min(n,n')}}\cdot +\infty]$
+\[
+\]
+
+\end{document}

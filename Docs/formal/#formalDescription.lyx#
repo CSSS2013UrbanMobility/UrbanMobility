@@ -4,9 +4,12 @@
 \begin_header
 \textclass article
 \begin_preamble
-\usepackage{background}
+\usepackage{bbm}
+
 
 \usepackage{geometry}[0.5]
+
+\usepackage{background}
 
 
 %manage background
@@ -158,13 +161,31 @@ We work either on imaginary city or with projected geographic description
 \end_inset
 
 .
- Furthermore, we assume the existence of an resistance function on the edges
- of the road network, which will be anisotropic in order to simplify the
- implementation, and that will depend on the current charge of the edge.
+ Furthermore, we assume the existence of an resistance function 
+\begin_inset Formula $r(\cdot,t)$
+\end_inset
+
+ on the edges of the road network, which will be anisotropic in order to
+ simplify the implementation, and that will depend on the current charge
+ of the edge.
  For the public transport, speeds in edges only depend of time, and will
  be determined by real frequencies.
  For use of street network by foot, we assume that no congestion is possible
  so resistance is constant regarding time and charge.
+ Edges also have fixed capacity 
+\begin_inset Formula $c$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The flow function on the edges 
+\begin_inset Formula $f(\cdot,t)$
+\end_inset
+
+ will be used as an output of the model and in the expression of the resistance
+ function to have feedback of traffic charge on agent speed.
 \end_layout
 
 \begin_layout Standard
@@ -212,6 +233,145 @@ Given the time-table of an agent
 \end_inset
 
  (most probably defined on finite subset), 
+\end_layout
+
+\begin_layout Subsection
+Decision-making
+\end_layout
+
+\begin_layout Standard
+//Add decision making tree.
+\end_layout
+
+\begin_layout Subsection
+Travel by public transportation or foot
+\end_layout
+
+\begin_layout Subsection
+Heuristic for agent travel by car
+\end_layout
+
+\begin_layout Standard
+In order to get more realistic interactions between agents, we propose to
+ add to the feedback of flows on agents speed by scale-coupling a local
+ effect of roads charges on agent decision.
+ Therefore, an agent can at any time of his travel modify the route he has
+ planned.
+ The structure of the heuristic we described here appears as a crucial point
+ in the modeling process since all choices were made according to 
+\begin_inset Quotes eld
+\end_inset
+
+rational
+\begin_inset Quotes erd
+\end_inset
+
+ vision of human agents.
+\end_layout
+
+\begin_layout Standard
+Each agent has for each 
+\begin_inset Quotes eld
+\end_inset
+
+daily
+\begin_inset Quotes erd
+\end_inset
+
+ travel some fixed paths (let say arbitrary three) that he knows : 
+\begin_inset Formula $p=((p_{0},p_{1},p_{2})_{O_{i},D_{i}})_{i}$
+\end_inset
+
+ with 
+\begin_inset Formula $O_{i},D_{i}\in C$
+\end_inset
+
+.
+ The agent 
+\begin_inset Formula $a$
+\end_inset
+
+ executes the route step by step by changing the position 
+\begin_inset Formula $(x_{a}(t+\tau),y_{a}(t+\tau))=m(t,p,a,r(e(a,t),t),c(e(a,t)),f(e(a,t),t))$
+\end_inset
+
+ with 
+\begin_inset Formula $e(a,t)$
+\end_inset
+
+ the next edge in the planned path at time t.
+ 
+\end_layout
+
+\begin_layout Paragraph
+Metric on paths in euclidian graph
+\end_layout
+
+\begin_layout Standard
+To justify the used heuristic for 
+\begin_inset Quotes eld
+\end_inset
+
+prefered path
+\begin_inset Quotes erd
+\end_inset
+
+ calculation, we need a metric on path in graphs to justify the intuition
+ that perturbing the shortest path and recalculating the shortest path will
+ lead to a 
+\begin_inset Quotes eld
+\end_inset
+
+not so far
+\begin_inset Quotes erd
+\end_inset
+
+ path in the graph.
+\end_layout
+
+\begin_layout Standard
+To define an exact continuity, we need a total metric : a good candidate
+ is 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$[d((a_{i})_{1
+\backslash
+leq i
+\backslash
+leq n},(a'_{j})_{1
+\backslash
+leq j
+\backslash
+leq n'})=
+\backslash
+sum_{i=1}^{min(n,n')}(a_{i}-a'_{i})^{2}+
+\backslash
+bbm{1}_{n=n'}
+\backslash
+cdot +
+\backslash
+infty +
+\backslash
+bbm{1}_{a_{1}=a'_{1}&a_{min(n,n')}=a'_{min(n,n')}}
+\backslash
+cdot +
+\backslash
+infty]$
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\]
+
+\end_inset
+
+
 \end_layout
 
 \end_body

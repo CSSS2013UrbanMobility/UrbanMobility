@@ -4,34 +4,123 @@
 ;;;;;;;;;;;;;;;;;;;;;
 
 
-extensions[nw]
+extensions[nw gis]
 
 __includes[
+  ;;source files
   "routing.nls" 
+  "routing-setup.nls"
+  "routing-tests.nls"
+  ;"mobility_v0.1.nls"
+  
+  ;;utilities
+  "utils/NetworkUtilities.nls"
+  "utils/ListUtilities.nls"
 ]
+
+globals[
+  ;;real time interval for a tick
+  tick-time-interval
+  
+  ;;individual creation parameters
+  nb-workers
+  
+  
+  
+  ;;movement parameters
+  begin-congestion-treshold
+  max-congestion-treshold
+  min-congestion-speed
+  
+  epsilon-prefered-paths
+  
+  ;;utility variables
+  remaining-vertices
+  cluster-treshold
+  remaining-links
+]
+
+
 
 
 ;;vertices of both networks
 breed [vertices vertex]
 
-;;three different type of individuals
-breed [workers worker]
-breed [unemployeds unemployed]
-breed [students student]
+;;breed for individual agents. type of agent is a owned var
+breed [individuals individual]
+
+;;breed for utility purposes (testing functions for rerouting)
+breed [abstract-gis-paths abstract-gis-path]
 
 ;;links for road network
 undirected-link-breed [roads road]
 
 ;;links for public transportation network
 undirected-link-breed [transits transit]
+
+
+
+individuals-own[
+  
+  
+  
+  ;;
+  travel-destinations
+  
+  
+  
+ ;;;;;;;;;;;;;
+ ;;variables for path calculation and traveling
+ ;;;;;;;;;;;;;
+ prefered-paths
+
+ next-travel-start
+ next-travel-type
+
+ is-travelling?
+
+ times-rerouted
+
+ current-edge
+ remaining-distance-in-edge
+ remaining-time-in-tick
+ 
+ ;;list of the path that has to be executed
+ current-path
+
+ current-position ;couple of coordinates
+]
+
+roads-own[
+ ;;real length of road
+ road-length
+  
+ ;;capacity of road : unit : Number of cars
+ capacity
+ 
+ ;;authorized speed in edge
+ max-speed
+ 
+ ;;intermediary var for weighted paths
+ weight
+ 
+ ;;list of pointers to people currently travelling in edge
+ people-in-edge
+ 
+]
+
+abstract-gis-paths-own [
+   gis-feature
+   vertices-list
+]
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
 10
-649
-470
-16
-16
+1013
+652
+30
+23
 13.0
 1
 10
@@ -42,10 +131,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--16
-16
--16
-16
+-30
+30
+-23
+23
 0
 0
 1
