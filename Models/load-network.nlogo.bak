@@ -1,8 +1,6 @@
-;;;;;;;;;;;;;;;;;;;;;
-;; Core file for the model, what includes interface, infos, but with less code as possible.
-;; NetLogo "headers" have to be all here.
-;;;;;;;;;;;;;;;;;;;;;
+extensions [gis]
 
+<<<<<<< HEAD:Models/UrbanMobility.nlogo
 
 extensions[nw gis array]
 
@@ -84,14 +82,57 @@ breed [abstract-gis-paths abstract-gis-path]
 undirected-link-breed [roads road]
 
 ;;links for public transportation network
+=======
+globals [pt-network road-network] ;; store public transport and road network from shapefile
+undirected-link-breed [roads road] ;; edges between nodes
+>>>>>>> christoph:Models/load-network.nlogo.bak
 undirected-link-breed [transits transit]
+breed [vertices vertex] ;; vertices
+vertices-own [is-station?]
+roads-own [max-speed capacity]
 
 
+to load-networks
+  clear-canvas white
+  load-public-transport-network
+  load-road-network
+end
 
-individuals-own[
+to load-public-transport-network
+  set pt-network load-from-shapefile "../Data/simple_network/pt.shp"
+  zoom-to-dataset pt-network
+  create-edges-and-vertices pt-network blue 3.0 black 5.0 "circle" true
+end
+
+to load-road-network
+  set road-network load-from-shapefile "../Data/simple_network/rd.shp"
+  ;zoom-to-dataset road-network
+  create-edges-and-vertices road-network black 0.75 black 0.75 "circle" false
+end
+
+to-report load-from-shapefile [filename]
+  report gis:load-dataset filename
+end
+
+to zoom-to-dataset [vectordataset]
+  let margin 0.01   ;; in degrees
+  let envelope gis:envelope-of vectordataset
+  show envelope
+  set envelope (list (item 0 envelope - margin)  (item 1 envelope + margin) (item 2 envelope - margin) (item 3 envelope + margin))
+  show envelope
+  gis:set-world-envelope-ds envelope ;gis:envelope-of vectordataset
+end
+
+
+to-report create-vertex-at [coords v_color v_size v_shape is-public-transport?]
+  if empty? coords [
+    report nobody
+  ]
+
+  let x first coords
+  let y last coords
   
-  
-  
+<<<<<<< HEAD:Models/UrbanMobility.nlogo
   ;;
   time-schedule
   space-schedule
@@ -210,15 +251,77 @@ patches-own[
 
 
 
+=======
+  if not any? vertices-on patch x y [
+    create-vertices 1 [ 
+      set xcor x
+      set ycor y
+      set shape v_shape
+      set size v_size
+      set color v_color
+      set is-station? is-public-transport?
+    ]
+  ]
+  report one-of vertices-on patch x y
+end
+    
+to create-edges-and-vertices [vectordataset l_color l_width v_color v_size v_shape is-public-transport?]  
+  foreach gis:feature-list-of vectordataset [
+    let feature ?
+    foreach gis:vertex-lists-of feature [
+      let firstpoint create-vertex-at gis:location-of first ? v_color v_size v_shape is-public-transport?
+      let lastpoint create-vertex-at gis:location-of last ? v_color v_size v_shape is-public-transport?
+      if not ((firstpoint = lastpoint) or (firstpoint = nobody) or (lastpoint = nobody)) [
+        ask firstpoint [
+          if-else is-public-transport? [
+             create-transit-with lastpoint [
+               set color l_color
+               set thickness l_width
+               
+             ]
+          ] [
+             create-road-with lastpoint [
+               set color l_color
+               set thickness l_width 
+               set capacity gis:property-value feature "capacity"
+               set max-speed gis:property-value feature "avgspeed"
+             ]
+          ]
+;          create-link-with lastpoint [
+;            set color l_color
+;            set thickness l_width
+;            if-else is-public-transport? [ set breed transits ] [ set breed roads ]            
+;          ]
+        ]
+      ]  
+    ]
+  ]
+end
+
+  
+to clear-canvas [colour]
+  ask patches [ 
+    set pcolor colour
+  ]
+end
+>>>>>>> christoph:Models/load-network.nlogo.bak
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
 10
+<<<<<<< HEAD:Models/UrbanMobility.nlogo
 832
 653
 -1
 -1
 12.0
+=======
+1022
+843
+200
+200
+2.0
+>>>>>>> christoph:Models/load-network.nlogo.bak
 1
 10
 1
@@ -228,12 +331,21 @@ GRAPHICS-WINDOW
 1
 1
 1
+<<<<<<< HEAD:Models/UrbanMobility.nlogo
 0
 50
 0
 50
 0
 0
+=======
+-200
+200
+-200
+200
+1
+1
+>>>>>>> christoph:Models/load-network.nlogo.bak
 1
 ticks
 30.0
@@ -377,17 +489,15 @@ paths-setup
 @#$#@#$#@
 ## WHAT IS IT?
 
-Modeling daily movements of individuals inside a city. The main interest is to look at shares between public transport, foot and car movements.
+(a general understanding of what the model is trying to show or explain)
 
 ## HOW IT WORKS
 
-Agents are individuals that have a given timetable for a day, and also particular origins and destination. According to that, they make decisions on which transport to use (TODO more details) and route themselves in the city network.
-In the case of a travel by car, they are able to decide to change their route if the road is congested.
+(what rules the agents use to create the overall behavior of the model)
 
 ## HOW TO USE IT
 
-Launch a simulation on a day to see the evolution of local flows, places of congestions at different times, etc.
-A direct application is the comparison between two different public transportation networks in input, what corresponds to a proposal for a new infrastructure for example. One first motivation for building the model was to proceed to multi-criteria optimisation for such implantation.
+(how to use the model, including a description of each of the items in the Interface tab)
 
 ## THINGS TO NOTICE
 
@@ -411,8 +521,7 @@ A direct application is the comparison between two different public transportati
 
 ## CREDITS AND REFERENCES
 
-Everything is on Github:
-https://github.com/CSSS2013UrbanMobility/UrbanMobility
+(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
 @#$#@#$#@
 default
 true

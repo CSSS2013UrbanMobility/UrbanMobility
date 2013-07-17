@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> christoph
 to load-networks
   clear-canvas white
   load-public-transport-network
@@ -7,13 +11,21 @@ end
 to load-public-transport-network
   set pt-network load-from-shapefile "../Data/simple_network/pt.shp"
   zoom-to-dataset pt-network
+<<<<<<< HEAD
   create-edges-and-vertices pt-network blue 0.2 blue 0.2 "circle" true
+=======
+  create-edges-and-vertices pt-network blue 3.0 black 5.0 "circle" true
+>>>>>>> christoph
 end
 
 to load-road-network
   set road-network load-from-shapefile "../Data/simple_network/rd.shp"
   ;zoom-to-dataset road-network
+<<<<<<< HEAD
   create-edges-and-vertices road-network red 0.2 red 0.2 "circle" false
+=======
+  create-edges-and-vertices road-network black 0.75 black 0.75 "circle" false
+>>>>>>> christoph
 end
 
 to-report load-from-shapefile [filename]
@@ -23,9 +35,13 @@ end
 to zoom-to-dataset [vectordataset]
   let margin 0.01   ;; in degrees
   let envelope gis:envelope-of vectordataset
+<<<<<<< HEAD
   show envelope
   set envelope (list (item 0 envelope - margin)  (item 1 envelope + margin) (item 2 envelope - margin) (item 3 envelope + margin))
   show envelope
+=======
+  set envelope (list (item 0 envelope - margin)  (item 1 envelope + margin) (item 2 envelope - margin) (item 3 envelope + margin))
+>>>>>>> christoph
   gis:set-world-envelope-ds envelope ;gis:envelope-of vectordataset
 end
 
@@ -61,15 +77,29 @@ to create-edges-and-vertices [vectordataset l_color l_width v_color v_size v_sha
         ask firstpoint [
           if-else is-public-transport? [
              create-transit-with lastpoint [
+<<<<<<< HEAD
                set color l_color
                set thickness l_width
                set avg-speed 30 + (random 2 * 20 )
+=======
+               set color gis:property-value feature "color_num"
+               set thickness l_width
+               set length-of-edge gis:property-value feature "length"
+               set ligne gis:property-value feature "line"
+               
+>>>>>>> christoph
              ]
           ] [
              create-road-with lastpoint [
                set color l_color
                set thickness l_width 
+<<<<<<< HEAD
                set avg-speed 30 + (random 2 * 20 )            
+=======
+               set capacity gis:property-value feature "capacity"
+               set max-speed gis:property-value feature "avgspeed"
+               set length-of-edge gis:property-value feature "length"
+>>>>>>> christoph
              ]
           ]
 ;          create-link-with lastpoint [
@@ -88,4 +118,8 @@ to clear-canvas [colour]
   ask patches [ 
     set pcolor colour
   ]
+<<<<<<< HEAD
 end
+=======
+end
+>>>>>>> christoph
