@@ -1,8 +1,8 @@
 to test-three-best-paths
   
   ask individuals [die]
-  ask roads [set max-speed 1]
-  create-individuals 1 [setxy 20 12 set travel-destinations (list (list -24 -13))
+  ask roads [set avg-speed 1]
+  create-individuals 1 [setxy 20 12 set space-schedule (list (list -24 -13))
     
     setup-prefered-paths
     show prefered-paths

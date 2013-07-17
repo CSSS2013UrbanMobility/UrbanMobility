@@ -1,7 +1,91 @@
 extensions [gis]
 
+<<<<<<< HEAD:Models/load-network.nlogo.bak
 globals [pt-network road-network] ;; store public transport and road network from shapefile
 undirected-link-breed [roads road] ;; edges between nodes
+=======
+
+extensions[nw gis array]
+
+__includes[
+  ;;source files
+  "main.nls"
+  "routing.nls" 
+  "routing-setup.nls"
+  "routing-tests.nls"
+  "mobility.nls"
+  "patches-setup.nls"
+  "load-network.nls"
+  "output.nls"
+  "codePatches.nls"
+  "tests.nls"
+  
+  ;;utilities
+  "utils/NetworkUtilities.nls"
+  "utils/ListUtilities.nls"
+]
+
+globals[
+  ;;real time interval for a tick
+  ;tick-time-interval  
+  nb-ticks
+  step
+  
+  ;;network import functions
+  pt-network
+  road-network
+  
+  
+  
+  ;;movement parameters
+  begin-congestion-treshold
+  max-congestion-treshold
+  min-congestion-speed
+  
+  epsilon-prefered-paths
+  
+  
+  
+  ;;vars for output calculation
+  km-congested ;; to init at 0
+  ;congestion-threshold ;; to decide when a road is considered as congested : used in the outputs -> length-of-congestion !!!!!!!! We should use a slider ?
+  travelling ;; number of people travelling
+  travelling-by-car ;; number of people travelling by car
+  travelling-by-foot ;; number of people travelling by foot
+  travelling-by-transportation  ;; number of people travelling by public transportation
+  
+  nb-clusters ;; Number of clusters we need
+  km-congested-per-cluster ;; Array of length nb-clusters which contains the nb of congested kilometers per cluster
+
+  
+  
+  
+  
+  
+  ;;utility variables
+  remaining-vertices
+  cluster-treshold
+  remaining-links
+  paths-setup
+]
+
+
+
+
+;;vertices of both networks
+breed [vertices vertex]
+
+;;breed for individual agents. type of agent is a owned var
+breed [individuals individual]
+
+;;breed for utility purposes (testing functions for rerouting)
+breed [abstract-gis-paths abstract-gis-path]
+
+;;links for road network
+undirected-link-breed [roads road]
+
+;;links for public transportation network
+>>>>>>> origin/juste:Models/UrbanMobility.nlogo
 undirected-link-breed [transits transit]
 breed [vertices vertex] ;; vertices
 vertices-own [is-station?]
@@ -48,6 +132,7 @@ to-report create-vertex-at [coords v_color v_size v_shape is-public-transport?]
   let x first coords
   let y last coords
   
+<<<<<<< HEAD:Models/load-network.nlogo.bak
   if not any? vertices-on patch x y [
     create-vertices 1 [ 
       set xcor x
@@ -100,15 +185,143 @@ to clear-canvas [colour]
     set pcolor colour
   ]
 end
+=======
+  ;;
+  time-schedule
+  space-schedule
+  
+  
+  
+  ;;;;;;;;;;;;;;;
+  ;; Individual properties
+  ;;;;;;;;;;;;;;;
+  
+  car-owner?
+  activity   ; Can be worker, student or inactive
+  home-x
+  home-y
+  office-x
+  office-y  
+  leisure-x
+  leisure-y
+  university-x
+  university-y
+  work-start
+  work-end
+  leisure-start
+  leisure-end
+  university-start
+  university-end
+  
+  preference
+  car-taken?
+  
+  
+ ;;;;;;;;;;;;;
+ ;;variables for path calculation and traveling
+ ;;;;;;;;;;;;;
+ prefered-paths
+ paths-transportation
+
+ next-travel-start
+ next-travel-type
+
+ is-travelling?
+
+ times-rerouted
+
+ current-edge
+ remaining-distance-in-edge
+ remaining-time-in-tick
+ 
+ individual-tolerance-for-congestion
+ 
+ ;;list of the path that has to be executed
+ current-path
+ 
+ current-alternative-routes
+
+ current-position ;couple of coordinates
+ 
+ 
+ ;;output
+ cluster-vertex
+ 
+]
+
+links-own[
+   ;;average speed in edge
+  avg-speed
+  min-travel-time
+  
+ ;;real length of road
+ length-of-edge
+  
+ ;;capacity of road : unit : Number of cars
+ capacity
+ 
+ ;;intermediary var for weighted paths
+ weight
+ 
+ ;;list of pointers to people currently travelling in edge
+ people-in-edge
+ 
+]
+
+
+
+
+
+vertices-own[
+  is-station?
+]
+
+
+
+abstract-gis-paths-own [
+   gis-feature
+   vertices-list
+]
+
+
+
+patches-own[
+  nb-cars
+  nb-workers
+  nb-inactives
+  nb-students
+  university?
+  offices?
+  leisure?
+]
+
+
+
+
+
+
+
+
+
+
+>>>>>>> origin/juste:Models/UrbanMobility.nlogo
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
 10
+<<<<<<< HEAD:Models/load-network.nlogo.bak
 1022
 843
 200
 200
 2.0
+=======
+832
+653
+-1
+-1
+12.0
+>>>>>>> origin/juste:Models/UrbanMobility.nlogo
 1
 10
 1
@@ -118,15 +331,160 @@ GRAPHICS-WINDOW
 1
 1
 1
+<<<<<<< HEAD:Models/load-network.nlogo.bak
 -200
 200
 -200
 200
 1
 1
+=======
+0
+50
+0
+50
+0
+0
+>>>>>>> origin/juste:Models/UrbanMobility.nlogo
 1
 ticks
 30.0
+
+SLIDER
+11
+62
+103
+95
+workers
+workers
+0
+100
+5
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+110
+62
+202
+95
+students
+students
+0
+100
+5
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+11
+98
+103
+131
+inactives
+inactives
+0
+100
+5
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+110
+98
+202
+131
+car-percentage
+car-percentage
+0
+100
+75
+1
+1
+NIL
+HORIZONTAL
+
+BUTTON
+13
+17
+68
+50
+setup
+setup-model
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SLIDER
+853
+10
+1025
+43
+tick-time-interval
+tick-time-interval
+0
+1
+0.1
+0.05
+1
+NIL
+HORIZONTAL
+
+SLIDER
+855
+49
+1044
+82
+congestion-threshold
+congestion-threshold
+0
+1
+0.8
+0.1
+1
+NIL
+HORIZONTAL
+
+MONITOR
+1307
+12
+1364
+57
+indiv
+count individuals
+17
+1
+11
+
+OUTPUT
+10
+222
+205
+361
+8
+
+MONITOR
+10
+133
+60
+178
+paths
+paths-setup
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?

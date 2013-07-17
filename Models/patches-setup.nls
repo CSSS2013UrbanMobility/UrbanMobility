@@ -1,0 +1,30 @@
+
+
+
+
+
+to import-patches
+  
+  import-pcolors "landuses/workers.png"
+  ask patches with [pcolor != 0] [set nb-workers min list 20 round (1 / pcolor * workers) set pcolor 0]
+  
+  import-pcolors "landuses/students.png"
+  ask patches with [pcolor != 0] [set nb-students min list 20 round (1 / pcolor * students) set pcolor 0]
+  
+  import-pcolors "landuses/inactives.png" 
+  ask patches with [pcolor != 0] [set nb-inactives min list 20 round (1 / pcolor * inactives)  set pcolor 0] 
+  
+  import-pcolors "landuses/cars.png" ; lighter = less
+  ask patches with [pcolor != 0] [set nb-cars min list 20 round (1 / pcolor * ((nb-workers + nb-students + nb-inactives) * car-percentage / 100)) set pcolor 0]
+
+  import-pcolors "landuses/offices.png" 
+  ask patches with [pcolor != 0] [set offices? true  set pcolor 0]
+  
+  import-pcolors "landuses/university.png"
+  ask patches with [pcolor != 0] [set university? true  set pcolor 0]  
+  
+  import-pcolors "landuses/leisure.png"
+  ask patches with [pcolor != 0] [set leisure? true  set pcolor 0]
+  
+  
+end

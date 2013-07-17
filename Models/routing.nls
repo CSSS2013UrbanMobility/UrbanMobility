@@ -21,6 +21,7 @@ to move-agent
   ifelse is-travelling?[
     make-a-step
   ][
+    ;;FATAL BUG : IF TRAVEL_TIME > interval to next-start, agent will miss next travel.
     if ticks = next-travel-start [
       ;set travel type and so one : decision tree
       ;take-decision 
@@ -29,15 +30,40 @@ to move-agent
       ;;check the type of travel, if sub or foot, shortest path routing
       ;;if car, first prefered path routing
       ;;launch the agent in the first edge of its adventure by setting current-edge first one of travel and setting position in edge 0.
-     
-     
+      
+      ;;find current-path in cache memory
+      ifelse next-travel-type = "WALK" or next-travel-type = "CAR" [
+        set current-path first first prefered-paths
+      ][
+        set current-path first paths-transportation
+      ]
+      ;;beware, rotation in lists is always done in both!
+      set prefered-paths rotate prefered-paths
+      set paths-transportation rotate paths-transportation
+      
+      set current-edge first current-path
+      let origin one-of ([both-ends] of current-edge ) with [not member? self [both-ends] of first but-first current-path]
+      set current-path but-first current-path
+      
+      move-to origin 
+
+      let h 0 ask current-edge [ask origin [set h towards other-end ]] set heading h
+      
       set is-travelling? true
       set times-rerouted 0
+      ;;since the destination is fixed
+      set space-schedule rotate space-schedule
+      ;and the time has been reached
+      set next-travel-start first time-schedule
+      set time-schedule rotate time-schedule
+      
     ]
   ]
   
   
 end
+
+
 
 to make-a-step
   
@@ -46,9 +72,10 @@ to make-a-step
   ;;seems current if time step is around 5 minutes.
   
   ;;first make a step in the current edge
-  while [remaining-time-in-tick > 0] [
+  while [remaining-time-in-tick > 0 and is-travelling?] [
     move-in-current-edge
   ]
+  
 end
 
 
@@ -80,6 +107,7 @@ to move-in-current-edge
       ;maybe at this point need some position correction? by :
       ;move-to one-of vertices with-min [distance myself]
       set remaining-time-in-tick remaining-time-in-tick - (remaining-distance-in-edge / ([possible-speed] of current-edge))
+            
            
       ;;reroute procedure.
       reroute
@@ -90,16 +118,37 @@ end
 
 
 to reroute
-  ;;first of all check condition
-  let hypothetical-next-edge first current-path
-  ifelse true [;congestion-on-edge >= individual-tolerance-for-congestion
-    ;;reroute procedure : find in 
+  ;;first of all if journey finished !
+  ifelse current-path = [][
+    set is-travelling? false
+  ][
+    let hypothetical-next-edge first current-path
+    let destination last current-path
+    let n one-of vertices-here with-min [distance myself]
+    if next-travel-type = "CAR" and times-rerouted < 3 [;congestion-on-edge >= individual-tolerance-for-congestion
+      ;;reroute procedure : find the closest vertex on the two others prefered routes (stored in alternative routes)
+      set times-rerouted times-rerouted + 1
+      snapshot
+      let v1 first sort-on [[distance n] of [end2] of self] first current-alternative-routes
+      let v2 first sort-on [[distance n] of [end2] of self] first but-first current-alternative-routes
+      let begin [] let fin []
+      ifelse v1 < v2 [
+        ask n [set begin nw:weighted-path-to v1 "length-of-edge"] ask v1 [set fin nw:weighted-path-to destination "length-of-edge"]
+      ][
+        ask n [set begin nw:weighted-path-to v2 "length-of-edge"] ask v2 [set fin nw:weighted-path-to destination "length-of-edge"]
+      ]
+      set current-path concat begin fin
+      set hypothetical-next-edge first current-path
+    ]
     
-  ]
-  [
+    ;;always done : change edge.
     set current-edge hypothetical-next-edge
     set current-path but-first current-path
     set remaining-distance-in-edge [link-length] of current-edge
+    ;;dont forget heading !!!
+    let h 0
+    ask current-edge [ask n [set h towards other-end ]]
+    set heading h
   ]
 end
 
@@ -109,7 +158,7 @@ end
 ;;implements an affine by parts law
 to-report possible-speed
   let c 0.5;congestion-on-edge
-  if c < begin-congestion-treshold [report max-speed]
-  ifelse c < max-congestion-treshold [report (max-speed - min-congestion-speed) * (max-congestion-treshold - c) + max-speed]
+  if c < begin-congestion-treshold [report avg-speed]
+  ifelse c < max-congestion-treshold [report (avg-speed - min-congestion-speed) * (max-congestion-treshold - c) + avg-speed]
   [report min-congestion-speed]
 end
